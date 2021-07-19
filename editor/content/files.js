@@ -102,7 +102,7 @@ export const file_reader__writeFile = function(content) {
     anchor.click()
 }
 
-const getGeneratedPageURL = ({ html, css, js }) => {
+const getGeneratedPageURL = ({ html, css, js, md }) => {
         const getBlobURL = (code, type) => {
             const blob = new Blob([code], { type })
             return URL.createObjectURL(blob)
@@ -110,6 +110,14 @@ const getGeneratedPageURL = ({ html, css, js }) => {
 
         const cssURL = getBlobURL(css, 'text/css')
         const jsURL = getBlobURL(js, 'text/javascript')
+        const mdURL = getBlobURL(md, 'text/md')
+
+        let add_md = null
+
+        if (md) {
+            add_md = `<script type="module" src="https://cdn.jsdelivr.net/gh/zerodevx/zero-md@2/dist/zero-md.min.js"></script>
+<zero-md src="${mdURL}"></zero-md>`
+        }
 
         const source = `
 <!DOCTYPE html>
@@ -125,6 +133,7 @@ const getGeneratedPageURL = ({ html, css, js }) => {
 </head>
 <body>
     ${html || ''}
+    ${add_md || ''}
     ${js && `<script src="${jsURL}"></script>`}
     </body>
 </html>
@@ -143,7 +152,8 @@ export const loadPreviewFile = function() {
     let url = {
         'html': '',
         'css': '',
-        'js': ''
+        'js': '',
+        'md': ''
     }
 
     for (let file of $files) {
@@ -192,6 +202,8 @@ ${window.localStorage.getItem(file.name)}
 ${switchCode}
 </document>\n<!-- ============================ -->\n`
             }
+        } else if (file.type == "markdown") {
+            url.md += `${window.localStorage.getItem(file.name)}\n<!-- ============================ -->\n`
         }
     }
 
