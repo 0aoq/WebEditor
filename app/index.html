@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="node_modules/monaco-editor/min/vs/editor/editor.main.css">
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
     <link rel="stylesheet" href="theme.css">
 
     <title>Untitled - Monaco Test</title>
@@ -12,36 +12,37 @@
     <script>
         var require = {
             paths: {
-                vs: 'node_modules/monaco-editor/min/vs'
+                vs: '../node_modules/monaco-editor/min/vs'
             }
         };
     </script>
 
-    <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
-    <script src="node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
-    <script src="node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
 
-    <script src="node_modules/monaco-editor/min/vs/basic-languages/typescript/typescript.js"></script>
-    <script src="node_modules/monaco-editor/min/vs/basic-languages/lua/lua.js"></script>
-    <script src="node_modules/monaco-editor/min/vs/basic-languages/html/html.js"></script>
-    <script src="node_modules/monaco-editor/min/vs/basic-languages/markdown/markdown.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/basic-languages/typescript/typescript.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/basic-languages/lua/lua.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/basic-languages/html/html.js"></script>
+    <script src="../node_modules/monaco-editor/min/vs/basic-languages/markdown/markdown.js"></script>
 
     <!-- app -->
     <script src="editor/root.js"></script>
     <script src="editor/actions.js" type="module"></script>
     <script src="editor/content/files.js" type="module"></script>
-    <script src="node_modules/emmet-monaco-es/dist/emmet-monaco.min.js"></script>
+    <script src="../node_modules/emmet-monaco-es/dist/emmet-monaco.min.js"></script>
 
     <!-- xterm -->
-    <!-- <link rel="stylesheet" href="node_modules/xterm/css/xterm.css"> -->
+    <!-- <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"> -->
 </head>
 
 <body>
     <div style="background: rgb(42, 127, 255);" hidden>[ TOPBAR ]</div>
+
     <div style="display: flex;">
-        <div id="editor"></div>
-        <div id="preview">
-            <iframe frameborder="0" style="height: 100%; width: 100%;" id="preview-iframe"></iframe>
+        <div id="editor" aria-label="Main code editor (Monaco)"></div>
+        <div id="preview" aria-label="HTML5 Previewer">
+            <iframe frameborder="0" style="height: 100%; width: 100%;" id="preview-iframe" aria-label="Blob renderer for HTML5 preview"></iframe>
         </div>
     </div>
 

@@ -1,4 +1,5 @@
 const electron = require('electron');
+const path = require('path')
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
@@ -11,11 +12,11 @@ function createWindow() {
         webPreferences: {
             worldSafeExecuteJavaScript: true,
             nodeIntegration: true,
-            nodeIntegrationInWorker: true
+            nodeIntegrationInWorker: true,
+            titleBarStyle: "hidden"
         }
     });
-    mainWindow.loadURL(`file://${__dirname}/index.html`);
-    mainWindow.webContents.openDevTools();
+    mainWindow.loadURL(path.join(__dirname, 'app', 'index.html'));
     mainWindow.on('closed', function() {
         mainWindow = null;
     });
