@@ -138,6 +138,8 @@ export const loadPreviewFile = function() {
     const $settings = JSON.parse(window.localStorage.getItem("project_settings.json"))
     const $files = $settings[0].files
 
+    let html = false
+
     let url = {
         'html': '',
         'css': '',
@@ -146,11 +148,50 @@ export const loadPreviewFile = function() {
 
     for (let file of $files) {
         if (file.type == "stylesheet") {
-            url.css += `${window.localStorage.getItem(file.name)}// ============================ //\n`
+            url.css += `${window.localStorage.getItem(file.name)}\n// ============================ //\n`
         } else if (file.type == "script") {
-            url.js += `${window.localStorage.getItem(file.name)}/* ============================ */\n`
+            url.js += `${window.localStorage.getItem(file.name)}\n/* ============================ */\n`
         } else if (file.type == "document") {
-            url.html = `${window.localStorage.getItem(file.name)}<!-- ============================ -->\n`
+            let switchCode = `<script>
+    setTimeout(() => {
+        function query(__element) {
+            document.querySelectorAll(__element).forEach(function(element) {
+                function action() {
+                    element.href = "javascript://"
+                    element.addEventListener('click', () => {
+                        document.querySelectorAll("document").forEach(function(element) {
+                            element.style.display = "none"
+                        })
+        
+                        document.getElementById("file:///${file.name}").style.display = "block"
+                    })
+                }
+
+                if (element.href === "${file.name}") {
+                    action()
+                } else if (__element == "button") {
+                    action()
+                }
+            })
+        }
+        
+        query("a"); query("button")
+    }, 100)
+</script>`
+            if (html) {
+                url.html += `
+<document id="file:///${file.name}" style="display: none;">
+${window.localStorage.getItem(file.name)}
+${switchCode}
+</document>\n<!-- ============================ -->\n`
+            } else {
+                html = true
+                url.html += `
+<document id="file:///${file.name}" style="display: block;">
+${window.localStorage.getItem(file.name)}
+${switchCode}
+</document>\n<!-- ============================ -->\n`
+            }
         }
     }
 
@@ -171,6 +212,8 @@ export default {
 if (window.localStorage.getItem("fileactions") == null) {
     window.localStorage.setItem("fileactions", JSON.stringify([]))
 }
+
+// settings/run html
 
 const id = window.location.search.slice(1)
 

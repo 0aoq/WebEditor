@@ -125,6 +125,8 @@ for (let action of actions) {
     editor.addAction(action)
 }
 
+// file opening/deletion
+
 const id = window.location.search.slice(1)
 
 if (window.localStorage.getItem("fileactions") != null) {
