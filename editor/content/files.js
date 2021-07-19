@@ -14,6 +14,8 @@ export const action$ = function(failed, side, action) {
     }
 }
 
+export let addFilesToContextMenu = true
+
 function testLang(lang) {
     if (
         lang == "video/mp4" ||
@@ -31,7 +33,7 @@ function testLang(lang) {
 
 let currentFileLanguage
 
-export const loadFile = function(content, lang, name) {
+export const loadFile = function(content, lang, name, addToContext = true, autoswitch = true) {
     if (testLang(lang)) {
         if (lang == "application/x-javascript") {
             action$(false, true, `Expanded language type from "${lang}" to "javascript"`)
@@ -49,14 +51,17 @@ export const loadFile = function(content, lang, name) {
                 label: "Open " + name,
                 name: name,
                 lang: lang,
-                active: true
+                active: true,
+                addToContext: addToContext
             })
+
+            window.localStorage.setItem(name, content)
+            window.localStorage.setItem("fileactions", JSON.stringify(parsed))
         }
 
-        window.localStorage.setItem(name, content)
-
-        window.localStorage.setItem("fileactions", JSON.stringify(parsed))
-        window.location.href = "?" + name
+        if (autoswitch) {
+            window.location.href = "?" + name
+        }
     } else {
         editor.getModel().setValue("ERROR: File type is not supported.")
         monaco.editor.setModelLanguage(editor.getModel(), "plaintext");
@@ -81,7 +86,7 @@ export const file_reader__readFile = function() { // load files
                 currentFileLanguage = file.type
 
                 document.title = `${file.name} - Monaco Test`
-                loadFile(content, lang, file.name)
+                loadFile(content, lang, file.name, addFilesToContextMenu, true)
             }
         }
     }
@@ -107,15 +112,22 @@ const getGeneratedPageURL = ({ html, css, js }) => {
         const jsURL = getBlobURL(js, 'text/javascript')
 
         const source = `
-  <html>
-    <head>
-      ${css && `<link rel="stylesheet" type="text/css" href="${cssURL}" />`}
-    </head>
-    <body>
-      ${html || ''}
-      ${js && `<script src="${jsURL}"></script>`}
+<!DOCTYPE html>
+<html lang="en">
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    ${css && `<link rel="stylesheet" type="text/css" href="${cssURL}" />`}
+</head>
+<body>
+    ${html || ''}
+    ${js && `<script src="${jsURL}"></script>`}
     </body>
-  </html>
+</html>
 `
 
     return getBlobURL(source, 'text/html')
@@ -152,7 +164,8 @@ export default {
     file_reader__readFile,
     file_reader__writeFile,
     action$,
-    loadPreviewFile
+    loadPreviewFile,
+    addFilesToContextMenu
 }
 
 if (window.localStorage.getItem("fileactions") == null) {
@@ -200,6 +213,28 @@ if (window.localStorage.getItem("project_settings.json")) {
             window.location.reload()
         }
     })
+}
+
+if (window.localStorage.getItem("settings.json") == null) {
+    loadFile(`[
+    {
+        "minimapOpen": true,
+        "addFilesToContextMenu": true
+    }
+]`, "json", "settings.json", false)
+    window.location.reload()
+} else {
+    const settings = JSON.parse(window.localStorage.getItem("settings.json"))[0]
+
+    if (settings) {
+        editor.updateOptions({
+            minimap: {
+                enabled: settings.minimapOpen
+            }
+        })
+
+        addFilesToContextMenu = settings.addFilesToContextMenu
+    }
 }
 
 let lastTyped = 0

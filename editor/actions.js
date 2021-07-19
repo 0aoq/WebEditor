@@ -55,7 +55,7 @@ const actions = [{
     },
 }, {
     id: "clear-local-storage",
-    label: "Clear LocalStorage",
+    label: "Clear Files",
     contextMenuOrder: 0,
     contextMenuGroupId: "file-operation",
     keybindings: [
@@ -63,7 +63,13 @@ const actions = [{
         monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_C,
     ],
     run: function() {
-        window.localStorage.clear()
+        window.localStorage.setItem("previewopen", false)
+
+        for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
+            window.localStorage.removeItem(action.name)
+        }
+
+        window.localStorage.removeItem("fileactions")
         window.location.href = "?"
     },
 }, {
@@ -113,31 +119,7 @@ const actions = [{
     }
 ]`, "json", "project_settings.json")
     },
-}, {
-    id: "html-boilerplate",
-    label: "Insert HTML5 Boilerplate",
-    run: function() {
-        let selection = editor.getSelection()
-        let id = { major: 1, minor: 1 }
-        let text = `<!DOCTYPE html>
-<html lang="en">
-        
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-        
-<body>
-        
-</body>
-        
-</html>`
-        let op = { identifier: id, range: selection, text: text, forceMoveMarkers: true }
-        editor.executeEdits("my-source", [op])
-    },
-}, ]
+}]
 
 for (let action of actions) {
     editor.addAction(action)
@@ -148,40 +130,57 @@ const id = window.location.search.slice(1)
 if (window.localStorage.getItem("fileactions") != null) {
     for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
         if (action.active == true) {
-            editor.addAction({
-                id: action.id,
-                label: action.label,
-                contextMenuOrder: 2,
-                contextMenuGroupId: "filesystem",
-                run: function() {
-                    window.location.href = "?" + action.name
-                }
-            })
-
-            editor.addAction({
-                id: "delete-file-" + action.id.split("open-file-")[1],
-                label: "Delete " + action.label.split("Open ")[1],
-                run: function() {
-                    if (id != action.name) {
-                        window.localStorage.removeItem(action.name)
-
-                        const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
-
-                        for (let __$ of parsed) {
-                            if (__$.name == action.name) {
-                                __$.active = false
-                                __$.name = ""
-                                __$.id = ""
-                                __$.label = ""
-                            }
-                        }
-
-                        window.localStorage.setItem("fileactions", JSON.stringify(parsed))
-                    } else {
-                        alert("Cannot delete current file.")
+            if (action.addToContext == true && files.addFilesToContextMenu == true) {
+                editor.addAction({
+                    id: action.id,
+                    label: action.label,
+                    contextMenuOrder: 2,
+                    contextMenuGroupId: "filesystem",
+                    run: function() {
+                        window.location.href = "?" + action.name
                     }
-                }
-            })
+                })
+            } else {
+                editor.addAction({
+                    id: action.id,
+                    label: action.label,
+                    run: function() {
+                        window.location.href = "?" + action.name
+                    }
+                })
+            }
+
+            const reservedFiles = ['settings.json']
+            if (!reservedFiles.includes(action.name)) {
+                editor.addAction({
+                    id: "delete-file-" + action.id.split("open-file-")[1],
+                    label: "Delete " + action.label.split("Open ")[1],
+                    run: function() {
+                        if (id != action.name) {
+                            if (action.name == "project_settings.json") {
+                                window.localStorage.setItem("previewopen", false)
+                            }
+
+                            window.localStorage.removeItem(action.name)
+
+                            const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
+
+                            for (let __$ of parsed) {
+                                if (__$.name == action.name) {
+                                    __$.active = false
+                                    __$.name = ""
+                                    __$.id = ""
+                                    __$.label = ""
+                                }
+                            }
+
+                            window.localStorage.setItem("fileactions", JSON.stringify(parsed))
+                        } else {
+                            alert("Cannot delete current file.")
+                        }
+                    }
+                })
+            }
         }
     }
 }

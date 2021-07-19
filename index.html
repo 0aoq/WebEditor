@@ -132,7 +132,7 @@
             theme: 'theme',
             fontSize: "15px",
             minimap: {
-                enabled: true
+                enabled: false
             },
             dragAndDrop: true,
             automaticLayout: true,
@@ -168,7 +168,6 @@
         const loadPreview = function() {
             document.getElementById("preview").classList.add("active")
             document.getElementById("editor").classList.add("previewActive")
-            document.getElementById("preview").style.background = __('theme_gray_3')
         }
 
         const previewIframe = function(url) {
@@ -177,7 +176,18 @@
 
         // language options
 
-        const languages = ['javascript', 'lua', 'markdown', 'plaintext', 'css', 'csharp', '0a', 'html', 'typescript']
+        const languages = [
+            'javascript',
+            'lua',
+            'markdown',
+            'plaintext',
+            'css',
+            'csharp',
+            'html',
+            'typescript',
+            'cpp'
+        ]
+
         let currentLanguage = null
 
         const detectLanguage = function() {

@@ -293,7 +293,7 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 }
 
 #preview {
-    height: 99.5vh;
+    height: 100vh;
     border: none;
     display: none;
     font-family: Segoe WPC, Segoe UI, sans-serif;
