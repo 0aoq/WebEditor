@@ -63,6 +63,7 @@ const actions = [{
         monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_C,
     ],
     run: function() {
+        window.localStorage.setItem("currentFile", null)
         window.localStorage.setItem("previewopen", false)
 
         for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
@@ -127,7 +128,7 @@ for (let action of actions) {
 
 // file opening/deletion
 
-const id = window.location.search.slice(1)
+const id = window.localStorage.getItem('currentFile')
 
 if (window.localStorage.getItem("fileactions") != null) {
     for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
@@ -139,7 +140,9 @@ if (window.localStorage.getItem("fileactions") != null) {
                     contextMenuOrder: 2,
                     contextMenuGroupId: "filesystem",
                     run: function() {
-                        window.location.href = "?" + action.name
+                        window.localStorage.setItem("currentFile", action.name)
+                        editor.setValue(window.localStorage.getItem(action.name))
+                        monaco.editor.setModelLanguage(editor.getModel(), action.lang);
                     }
                 })
             } else {
@@ -147,7 +150,10 @@ if (window.localStorage.getItem("fileactions") != null) {
                     id: action.id,
                     label: action.label,
                     run: function() {
-                        window.location.href = "?" + action.name
+                        window.localStorage.setItem("currentFile", action.name)
+                        editor.setValue(window.localStorage.getItem(action.name))
+                        monaco.editor.setModelLanguage(editor.getModel(), action.lang);
+                        // window.location.href = "?" + action.name
                     }
                 })
             }

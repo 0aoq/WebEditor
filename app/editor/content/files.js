@@ -60,7 +60,9 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
         }
 
         if (autoswitch) {
-            window.location.href = "?" + name
+            window.localStorage.setItem("currentFile", name)
+            editor.setValue(window.localStorage.getItem(name))
+            monaco.editor.setModelLanguage(editor.getModel(), lang);
         }
     } else {
         editor.getModel().setValue("ERROR: File type is not supported.")
@@ -148,6 +150,7 @@ export const loadPreviewFile = function() {
     const $files = $settings[0].files
 
     let html = false
+    let documentRender = false
 
     let url = {
         'html': '',
@@ -162,6 +165,7 @@ export const loadPreviewFile = function() {
         } else if (file.type == "script") {
             url.js += `${window.localStorage.getItem(file.name)}\n/* ============================ */\n`
         } else if (file.type == "document") {
+            documentRender = true
             let switchCode = `<script>
     setTimeout(() => {
         function query(__element) {
@@ -203,8 +207,20 @@ ${switchCode}
 </document>\n<!-- ============================ -->\n`
             }
         } else if (file.type == "markdown") {
+            documentRender = true
             url.md += `${window.localStorage.getItem(file.name)}\n<!-- ============================ -->\n`
         }
+    }
+
+    if (!documentRender) {
+        url.md += `# Project Run Preview
+Project run preview is currently only supported for HTML projects. To create a project with preview support, try the example on the
+[github](https://github.com/0aoq/ubiquitous-engine/tree/main/examples/multiple-page-html-preview).
+
+Below is a list of supported file types for the HTML preview and their file extensions:
+- document (html)
+- stylesheet (css)
+- script (js)`
     }
 
     url = getGeneratedPageURL(url)

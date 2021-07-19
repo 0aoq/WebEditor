@@ -146,19 +146,19 @@
         });
 
         // state save
-        const id = window.location.search.slice(1)
+        editor.onDidChangeModelContent((event) => {
+            const id = window.localStorage.getItem("currentFile")
 
-        if (id) {
-            if (window.localStorage.getItem("fileactions") != null) {
-                for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
-                    if (action.name == id) {
-                        editor.onDidChangeModelContent((event) => {
+            if (id) {
+                if (window.localStorage.getItem("fileactions") != null) {
+                    for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
+                        if (action.name == id) {
                             window.localStorage.setItem(action.name, editor.getValue())
-                        })
+                        }
                     }
                 }
             }
-        }
+        })
 
         // extra windows
 
