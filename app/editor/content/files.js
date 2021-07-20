@@ -306,7 +306,7 @@ export const WORKER__MAIN_CHECKS = function() {
     }
     
     // preview updates
-    let lastTyped = 0
+    /* let lastTyped = 0
     let lastUpdated = 0
     
     if (window.sessionStorage.getItem("previewopen") != null && window.sessionStorage.getItem("previewopen") == "true") {
@@ -335,7 +335,7 @@ export const WORKER__MAIN_CHECKS = function() {
                 }, 2000);
             }
         })
-    }
+    } */
 }
 
 // file opening/deletion
