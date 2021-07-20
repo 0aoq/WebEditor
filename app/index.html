@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
+    <link rel="stylesheet" data-name="/vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
     <link rel="stylesheet" href="theme.css">
 
     <title>Untitled - Monaco Test</title>
@@ -37,7 +37,14 @@
 </head>
 
 <body>
-    <div style="background: rgb(42, 127, 255);" hidden>[ TOPBAR ]</div>
+    <div id="titlebar">
+        <span class="title">Monaco Test</span>
+        <span class="seperator">•</span>
+        <span id="currentFile">Untitled</span>
+        <span class="seperator">•</span>
+        <a href="https://github.com/0aoq/ubiquitous-engine" target="__blank">Github</a>
+        <a id="settingsBtn">Settings</a>
+    </div>
 
     <div style="display: flex;">
         <div id="editor" aria-label="Main code editor (Monaco)"></div>

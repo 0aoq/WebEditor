@@ -1,3 +1,5 @@
+let id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
+
 export const action$ = function(failed, side, action) {
     if (side) {
         if (failed) {
@@ -60,10 +62,11 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
         }
 
         if (autoswitch) {
-            window.localStorage.setItem("currentFile", name)
-            editor.setValue(window.localStorage.getItem(name))
-            monaco.editor.setModelLanguage(editor.getModel(), lang);
+            openFile(name, lang)
         }
+
+        WORKER__MAIN_CHECKS()
+        WORKER__FILE_LOADING()
     } else {
         editor.getModel().setValue("ERROR: File type is not supported.")
         monaco.editor.setModelLanguage(editor.getModel(), "plaintext");
@@ -146,7 +149,15 @@ const getGeneratedPageURL = ({ html, css, js, md }) => {
 
 export const loadPreviewFile = function() {
     // run file preview
-    const $settings = JSON.parse(window.localStorage.getItem("project_settings.json"))
+    let $settings
+
+    try {
+        $settings = JSON.parse(window.localStorage.getItem("project_settings.json"))
+    } catch(err) {
+        openFile('project_settings.json', 'json')
+        console.error(err)
+    }
+
     const $files = $settings[0].files
 
     let html = false
@@ -229,112 +240,208 @@ Below is a list of supported file types for the HTML preview and their file exte
     loadPreview()
 }
 
-export default {
-    file_reader__readFile,
-    file_reader__writeFile,
-    action$,
-    loadPreviewFile,
-    addFilesToContextMenu
+let run = false
+export const WORKER__MAIN_CHECKS = function() {
+    if (window.localStorage.getItem("project_settings.json") && !run) {
+        run = true
+        editor.addAction({
+            id: "run-files",
+            label: "Run Project",
+            contextMenuOrder: 1,
+            contextMenuGroupId: "filesystem",
+            keybindings: [
+                monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R,
+            ],
+            run: function() {
+                window.sessionStorage.setItem("previewopen", true)
+                loadPreviewFile()
+            }
+        })
+    
+        editor.addAction({
+            id: "end-run-files",
+            label: "End Project Run Process",
+            contextMenuOrder: 1,
+            contextMenuGroupId: "filesystem",
+            keybindings: [
+                monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyMod.Shift | monaco.KeyCode.KEY_R,
+            ],
+            run: function() {
+                window.sessionStorage.setItem("previewopen", false)
+                window.location.reload()
+            }
+        })
+    }
+    
+    // settings file
+    if (window.localStorage.getItem("settings.json") == null) {
+        loadFile(`[
+    {
+        "minimapEnabled": true,
+        "addFilesToContextMenu": true,
+        "topbarEnabled": true
+    }
+]`, "json", "settings.json", false, false)
+        window.location.reload()
+    } else {
+        const settings = JSON.parse(window.localStorage.getItem("settings.json"))[0]
+    
+        if (settings) {
+            settings.minimapEnabled = settings.minimapEnabled || true
+            settings.topbarEnabled = settings.topbarEnabled || true
+            settings.addFilesToContextMenu = settings.addFilesToContextMenu || true
+    
+            editor.updateOptions({
+                minimap: {
+                    enabled: settings.minimapEnabled
+                }
+            })
+    
+            if (!settings.topbarEnabled) {
+                document.getElementById("titlebar").style.display = "none"
+            }
+    
+            addFilesToContextMenu = settings.addFilesToContextMenu
+        }
+    }
+    
+    // preview updates
+    let lastTyped = 0
+    let lastUpdated = 0
+    
+    if (window.sessionStorage.getItem("previewopen") != null && window.sessionStorage.getItem("previewopen") == "true") {
+        loadPreviewFile()
+    
+        editor.onDidChangeModelContent(() => { // update preview on input
+            lastTyped++
+            if (window.sessionStorage.getItem("previewopen") != null && window.sessionStorage.getItem("previewopen") == "true") {
+                let open = true
+                setInterval(() => {
+                    if (lastTyped >= 1) {
+                        lastUpdated++
+                    }
+                }, 1000);
+    
+                setTimeout(() => { 
+                    if (lastTyped >= 1 && open == true && lastUpdated > 5) {
+                        if (lastUpdated > 0) {
+                            lastTyped = 0
+                            loadPreviewFile()
+                            lastUpdated = 0
+                        }
+                    }
+    
+                    open = false
+                }, 2000);
+            }
+        })
+    }
+}
+
+// file opening/deletion
+
+let __indexed = []
+
+function WORKER__FILE_LOADING() {
+    if (window.localStorage.getItem("fileactions") != null) {
+        for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
+            if (!__indexed.includes(action.name) && action.active == true) {
+                __indexed.push(action.name)
+                if (action.addToContext == true && addFilesToContextMenu == true) {
+                    editor.addAction({
+                        id: action.id,
+                        label: action.label,
+                        contextMenuOrder: 2,
+                        contextMenuGroupId: "filesystem",
+                        run: function() {
+                            openFile(action.name, action.lang)
+                        }
+                    })
+                } else {
+                    editor.addAction({
+                        id: action.id,
+                        label: action.label,
+                        run: function() {
+                            openFile(action.name, action.lang)
+                        }
+                    })
+                }
+
+                const reservedFiles = ['settings.json']
+                if (!reservedFiles.includes(action.name)) {
+                    editor.addAction({
+                        id: "delete-file-" + action.id.split("open-file-")[1],
+                        label: "Delete " + action.label.split("Open ")[1],
+                        run: function() {
+                            if (id != action.name) {
+                                if (action.name == "project_settings.json") {
+                                    window.sessionStorage.setItem("previewopen", false)
+                                }
+
+                                window.localStorage.removeItem(action.name)
+
+                                const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
+
+                                for (let __$ of parsed) {
+                                    if (__$.name == action.name) {
+                                        __$.active = false
+                                        __$.name = ""
+                                        __$.id = ""
+                                        __$.label = ""
+                                    }
+                                }
+
+                                window.localStorage.setItem("fileactions", JSON.stringify(parsed))
+
+                                window.location.reload()
+                            } else {
+                                alert("Cannot delete current file.")
+                            }
+                        }
+                    })
+                }
+            }
+        }
+    }
+}
+
+export async function openFile (name, type) {
+    window.localStorage.setItem("currentFile", name)
+    document.getElementById("currentFile").innerText = name
+    document.title = `${name} - Monaco Test`
+    editor.setValue(window.localStorage.getItem(name))
+    monaco.editor.setModelLanguage(editor.getModel(), type)
+    id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
+    action$(false, false, `Updated content of editor to the requested file`)
+    action$(false, false, `Changed language to ${type}`)
+    WORKER__MAIN_CHECKS()
+    WORKER__FILE_LOADING()
 }
 
 if (window.localStorage.getItem("fileactions") == null) {
     window.localStorage.setItem("fileactions", JSON.stringify([]))
 }
 
-// settings/run html
-
-const id = window.location.search.slice(1)
-
+// run options
 if (id && window.localStorage.getItem("fileactions") != null) {
     for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
         if (action.name == id) {
-            editor.setValue(window.localStorage.getItem(action.name))
-            monaco.editor.setModelLanguage(editor.getModel(), action.lang)
-            action$(false, false, `Updated content of editor to the requested file`)
-            action$(false, false, `Changed language to ${action.lang}`)
+            openFile(action.name, action.lang)
         }
     }
 }
 
-if (window.localStorage.getItem("project_settings.json")) {
-    editor.addAction({
-        id: "run-files",
-        label: "Run Project",
-        contextMenuOrder: 1,
-        contextMenuGroupId: "filesystem",
-        keybindings: [
-            monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_R,
-        ],
-        run: function() {
-            window.localStorage.setItem("previewopen", true)
-            loadPreviewFile()
-        }
-    })
+// extra titlebar buttons
+document.getElementById('settingsBtn').addEventListener('click', () => {
+    openFile('settings.json', 'json')
+})
 
-    editor.addAction({
-        id: "end-run-files",
-        label: "End Project Run Process",
-        contextMenuOrder: 1,
-        contextMenuGroupId: "filesystem",
-        keybindings: [
-            monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyMod.Shift | monaco.KeyCode.KEY_R,
-        ],
-        run: function() {
-            window.localStorage.setItem("previewopen", false)
-            window.location.reload()
-        }
-    })
-}
-
-if (window.localStorage.getItem("settings.json") == null) {
-    loadFile(`[
-    {
-        "minimapOpen": true,
-        "addFilesToContextMenu": true
-    }
-]`, "json", "settings.json", false)
-    window.location.reload()
-} else {
-    const settings = JSON.parse(window.localStorage.getItem("settings.json"))[0]
-
-    if (settings) {
-        editor.updateOptions({
-            minimap: {
-                enabled: settings.minimapOpen
-            }
-        })
-
-        addFilesToContextMenu = settings.addFilesToContextMenu
-    }
-}
-
-let lastTyped = 0
-let lastUpdated = 0
-
-if (window.localStorage.getItem("previewopen") != null && window.localStorage.getItem("previewopen") == "true") {
-    loadPreviewFile()
-
-    editor.onDidChangeModelContent(() => { // update preview on input
-        lastTyped++
-        if (window.localStorage.getItem("previewopen") != null && window.localStorage.getItem("previewopen") == "true") {
-            let open = true
-            setInterval(() => {
-                if (lastTyped >= 1) {
-                    lastUpdated++
-                }
-            }, 1000);
-
-            setTimeout(() => { 
-                if (lastTyped >= 1 && open == true && lastUpdated > 5) {
-                    if (lastUpdated > 0) {
-                        lastTyped = 0
-                        loadPreviewFile()
-                        lastUpdated = 0
-                    }
-                }
-
-                open = false
-            }, 2000);
-        }
-    })
+export default {
+    file_reader__readFile,
+    file_reader__writeFile,
+    action$,
+    loadPreviewFile,
+    addFilesToContextMenu,
+    openFile,
+    WORKER__MAIN_CHECKS
 }

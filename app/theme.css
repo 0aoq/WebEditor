@@ -6,6 +6,7 @@
 
 body {
     overflow: hidden;
+    font-family: Segoe WPC, Segoe UI, sans-serif;
 }
 
 #editor {
@@ -305,4 +306,45 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 
 #preview.active {
     display: block;
+}
+
+#titlebar {
+    background: #222436;
+    border-bottom: #1f2030 2px solid;
+    color: white;
+    padding: 10px;
+}
+
+#titlebar .title {
+    margin-left: 1.2em;
+    font-weight: 605;
+}
+
+#titlebar .seperator {
+    color: rgb(238, 238, 238);
+    margin-left: 10px;
+    margin-right: 10px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
+#titlebar #currentFile {
+    font-weight: 505;
+}
+
+#titlebar a {
+    color: white;
+    transition: all 0.2s;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#titlebar a:hover {
+    color: rgb(226, 226, 226);
+    text-shadow: 0 0 1px #000, 0 0 5px #ffffff3d, 0 0 3px #ffffff3d, 0 0 14px #ffffff3d !important;
+}
+
+#titlebar a:nth-child(even) {
+    margin-left: 10px;
 }

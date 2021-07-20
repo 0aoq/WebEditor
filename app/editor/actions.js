@@ -1,5 +1,4 @@
 import * as files from './content/files.js'
-import * as utility from './content/utility.js'
 
 const actions = [{
     id: "reload",
@@ -83,7 +82,16 @@ const actions = [{
         monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_N,
     ],
     run: function() {
-        window.location.href = "?"
+        let name = 'Untitled',
+            type = 'plaintext'
+        window.localStorage.setItem("currentFile", name)
+        document.getElementById("currentFile").innerText = name
+        document.title = `Untitled - Monaco Test`
+        editor.setValue(window.localStorage.getItem(name) || '')
+        monaco.editor.setModelLanguage(editor.getModel(), type)
+        action$(false, false, `Updated content of editor to the requested file`)
+        action$(false, false, `Changed language to ${type}`)
+        files.WORKER__MAIN_CHECKS()
     },
 }, {
     id: "create-terminal",
@@ -118,77 +126,10 @@ const actions = [{
             }
         ]
     }
-]`, "json", "project_settings.json")
+]`, "json", "project_settings.json", true, false)
     },
 }]
 
 for (let action of actions) {
     editor.addAction(action)
-}
-
-// file opening/deletion
-
-const id = window.localStorage.getItem('currentFile')
-
-if (window.localStorage.getItem("fileactions") != null) {
-    for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
-        if (action.active == true) {
-            if (action.addToContext == true && files.addFilesToContextMenu == true) {
-                editor.addAction({
-                    id: action.id,
-                    label: action.label,
-                    contextMenuOrder: 2,
-                    contextMenuGroupId: "filesystem",
-                    run: function() {
-                        window.localStorage.setItem("currentFile", action.name)
-                        editor.setValue(window.localStorage.getItem(action.name))
-                        monaco.editor.setModelLanguage(editor.getModel(), action.lang);
-                    }
-                })
-            } else {
-                editor.addAction({
-                    id: action.id,
-                    label: action.label,
-                    run: function() {
-                        window.localStorage.setItem("currentFile", action.name)
-                        editor.setValue(window.localStorage.getItem(action.name))
-                        monaco.editor.setModelLanguage(editor.getModel(), action.lang);
-                        // window.location.href = "?" + action.name
-                    }
-                })
-            }
-
-            const reservedFiles = ['settings.json']
-            if (!reservedFiles.includes(action.name)) {
-                editor.addAction({
-                    id: "delete-file-" + action.id.split("open-file-")[1],
-                    label: "Delete " + action.label.split("Open ")[1],
-                    run: function() {
-                        if (id != action.name) {
-                            if (action.name == "project_settings.json") {
-                                window.localStorage.setItem("previewopen", false)
-                            }
-
-                            window.localStorage.removeItem(action.name)
-
-                            const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
-
-                            for (let __$ of parsed) {
-                                if (__$.name == action.name) {
-                                    __$.active = false
-                                    __$.name = ""
-                                    __$.id = ""
-                                    __$.label = ""
-                                }
-                            }
-
-                            window.localStorage.setItem("fileactions", JSON.stringify(parsed))
-                        } else {
-                            alert("Cannot delete current file.")
-                        }
-                    }
-                })
-            }
-        }
-    }
 }
