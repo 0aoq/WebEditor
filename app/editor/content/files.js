@@ -403,6 +403,38 @@ function WORKER__FILE_LOADING() {
             }
         }
     }
+
+    if (id) {
+        if (id.split('.').includes('js') || id.split('.').includes('ts')) {
+            function js_snippet(name, snippet) {
+                editor.addAction({
+                    id: `'js-snippet-${name.toLowerCase().replaceAll(' ', '-')}'`,
+                    label: `JS Snippet: ${name}`,
+                    run: function() {
+                        insertCode(snippet)
+                    }
+                })
+            }
+
+            js_snippet('Insert For Loop', `for (let i = 0; i < 10; i++) {
+    // do whatever
+}`)
+        }
+    }
+}
+
+function insertCode(code) {
+    editor.executeEdits("editorMain", [
+        { 
+            identifier: { 
+                major: 1, 
+                minor: 1 
+            }, 
+            range: editor.getSelection(), 
+            text: code, 
+            forceMoveMarkers: true 
+        }
+    ])
 }
 
 export async function openFile (name, type) {
