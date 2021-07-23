@@ -37,10 +37,10 @@ let currentFileLanguage
 
 export const loadFile = function(content, lang, name, addToContext = true, autoswitch = true) {
     if (testLang(lang)) {
-        if (lang == "application/x-javascript") {
+        if (lang === "application/x-javascript" || lang === "js") {
             action$(false, true, `Expanded language type from "${lang}" to "javascript"`)
             lang = "javascript"
-        } else if (lang == "application/x-typescript") {
+        } else if (lang === "application/x-typescript" || lang === "ts") {
             action$(false, true, `Expanded language type from "${lang}" to "typescript"`)
             lang = "typescript"
         }
@@ -438,16 +438,20 @@ function insertCode(code) {
 }
 
 export async function openFile (name, type) {
-    window.localStorage.setItem("currentFile", name)
-    document.getElementById("currentFile").innerText = name
-    document.title = `${name} - Monaco Test`
-    editor.setValue(window.localStorage.getItem(name))
-    monaco.editor.setModelLanguage(editor.getModel(), type)
-    id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
-    action$(false, false, `Updated content of editor to the requested file`)
-    action$(false, false, `Changed language to ${type}`)
-    WORKER__MAIN_CHECKS()
-    WORKER__FILE_LOADING()
+    if (window.localStorage.getItem(name)) {
+        window.localStorage.setItem("currentFile", name)
+        document.getElementById("currentFile").innerText = name
+        document.title = `${name} - Monaco Test`
+        editor.setValue(window.localStorage.getItem(name))
+        monaco.editor.setModelLanguage(editor.getModel(), type)
+        id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
+        action$(false, false, `Updated content of editor to the requested file`)
+        action$(false, false, `Changed language to ${type}`)
+        WORKER__MAIN_CHECKS()
+        WORKER__FILE_LOADING()
+    } else {
+        loadFile("This is a new file!", name.split(".")[name.split(".").length - 1], name, true, true)
+    }
 }
 
 if (window.localStorage.getItem("fileactions") == null) {
@@ -464,8 +468,14 @@ if (id && window.localStorage.getItem("fileactions") != null) {
 }
 
 // extra titlebar buttons
-document.getElementById('settingsBtn').addEventListener('click', () => {
-    openFile('settings.json', 'json')
+document.querySelectorAll("a").forEach((element) => {
+    if (element.getAttribute("data-file")) {
+        const extensions = element.getAttribute("data-file").split(".")
+
+        element.addEventListener('click', () => {
+            openFile(element.getAttribute("data-file"), extensions[extensions.length - 1])
+        })
+    }
 })
 
 export default {
