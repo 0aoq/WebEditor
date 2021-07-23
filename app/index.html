@@ -3,7 +3,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-    <link rel="stylesheet" data-name="/vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
+    <link rel="stylesheet" data-name="/vs/editor/editor.main" href="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.css">
     <link rel="stylesheet" href="theme.css">
 
     <title>Untitled - Monaco Test</title>
@@ -12,19 +12,21 @@
     <script>
         var require = {
             paths: {
-                vs: '../node_modules/monaco-editor/min/vs'
+                vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs'
             }
         };
     </script>
 
-    <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
-    <script src="../node_modules/monaco-editor/min/vs/editor/editor.main.nls.js"></script>
-    <script src="../node_modules/monaco-editor/min/vs/editor/editor.main.js"></script>
 
-    <script src="../node_modules/monaco-editor/min/vs/basic-languages/typescript/typescript.js"></script>
-    <script src="../node_modules/monaco-editor/min/vs/basic-languages/lua/lua.js"></script>
-    <script src="../node_modules/monaco-editor/min/vs/basic-languages/html/html.js"></script>
-    <script src="../node_modules/monaco-editor/min/vs/basic-languages/markdown/markdown.js"></script>
+    <!-- https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/ # cdn for github pages -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/loader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.nls.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/editor/editor.main.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/basic-languages/typescript/typescript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/basic-languages/lua/lua.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/basic-languages/html/html.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.26.1/min/vs/basic-languages/markdown/markdown.js"></script>
 
     <!-- app -->
     <script src="editor/root.js"></script>
