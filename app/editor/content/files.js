@@ -1,3 +1,5 @@
+import * as FileSaver from '../../../node_modules/file-saver/dist/FileSaver.js'
+
 let id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
 
 export const action$ = function(failed, side, action) {
@@ -33,16 +35,29 @@ function testLang(lang) {
     }
 }
 
-let currentFileLanguage
+let conversions = [
+    { origin: "application/x-javascript", to: "javascript" },
+    { origin: "text/plain", to: "plaintext" }
+]
+
+function getConversion(origin, to) {
+    if (!origin) {
+        for (let datapoint of conversions) { if (datapoint.to === to) { return datapoint } }
+    } else if (!to) {
+        for (let datapoint of conversions) { if (datapoint.origin === origin) { return datapoint } }
+    } else {
+        console.warn("Origin/to must be defined.")
+    }
+}
 
 export const loadFile = function(content, lang, name, addToContext = true, autoswitch = true) {
     if (testLang(lang)) {
-        if (lang === "application/x-javascript" || lang === "js") {
-            action$(false, true, `Expanded language type from "${lang}" to "javascript"`)
-            lang = "javascript"
-        } else if (lang === "application/x-typescript" || lang === "ts") {
-            action$(false, true, `Expanded language type from "${lang}" to "typescript"`)
-            lang = "typescript"
+        let conv = getConversion(lang)
+        if (conv) {
+            if (lang === conv.origin) {
+                action$(false, true, `Expanded language type from "${lang}" to "javascript"`)
+                lang = conv.to
+            }
         }
 
         const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
@@ -86,9 +101,7 @@ export const file_reader__readFile = function() { // load files
 
             reader.onload = readerEvent => {
                 let content = readerEvent.target.result
-
                 let lang = file.type
-                currentFileLanguage = file.type
 
                 document.title = `${file.name} - Monaco Test`
                 loadFile(content, lang, file.name, addFilesToContextMenu, true)
@@ -100,11 +113,18 @@ export const file_reader__readFile = function() { // load files
 }
 
 export const file_reader__writeFile = function(content) {
-    var blob = new Blob([content], { type: currentFileLanguage })
-    var anchor = document.createElement("a")
-    anchor.download = "demo.txt"
-    anchor.url = window.URL.createObjectURL(blob)
-    anchor.click()
+    function getLanguage(lang) {
+        let conv = getConversion(null, lang)
+
+        if (conv) {
+            return conv.origin
+        } else {
+            return lang
+        }
+    }
+
+    let blob = new Blob([content], { type: `${getLanguage(editor.getModel().getLanguageIdentifier().language)};charset=utf-8` });
+    FileSaver.saveAs(blob, window.localStorage.getItem("currentFile"))
 }
 
 const getGeneratedPageURL = ({ html, css, js, md }) => {

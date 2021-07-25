@@ -26,7 +26,7 @@ const actions = [{
     },
 }, {
     id: "write-document",
-    label: "Write Document to File",
+    label: "Prompt Save File",
     contextMenuOrder: 0,
     contextMenuGroupId: "file-operation",
     keybindings: [
