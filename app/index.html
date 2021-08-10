@@ -34,18 +34,27 @@
     <script src="editor/content/files.js" type="module"></script>
     <script src="../node_modules/emmet-monaco-es/dist/emmet-monaco.min.js"></script>
 
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+
     <!-- xterm -->
     <!-- <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"> -->
 </head>
 
 <body>
+    <!-- Context Menu -->
+    <div class="context-menu onhover shadow">
+        <ul class="menu-options"></ul>
+    </div>
+
+    <!-- App -->
     <div id="titlebar">
-        <span class="title">Monaco Test</span>
-        <span class="seperator">•</span>
+        <span class="title1" style="margin-left: 1.5em;">Monaco Test</span>
+        <span class="space1">•</span>
         <span id="currentFile">Untitled</span>
-        <span class="seperator">•</span>
+        <span class="space1">•</span>
         <a href="https://github.com/0aoq/ubiquitous-engine" target="__blank">Github</a>
         <a data-file="settings.json">Settings</a>
+        <a data-editor-action="toggleExplorer">Explorer</a>
     </div>
 
     <div style="display: flex;">
@@ -53,6 +62,34 @@
         <div id="preview" aria-label="HTML5 Previewer">
             <iframe frameborder="0" style="height: 100%; width: 100%;" id="preview-iframe" aria-label="Blob renderer for HTML5 preview"></iframe>
         </div>
+
+        <ul id="explorer">
+            <details>
+                <summary>
+                    <li class="explorer-outside-item">
+                        <a style="margin-right: 5px; margin-left: 0;" class="glow-btn">[>]</a>
+                        <span class="title1">Monaco</span>
+                    </li>
+                </summary>
+
+                <li class="explorer-outside-item">
+                    <!-- Files -->
+                    <details>
+                        <summary>
+                            <li class="explorer-outside-item" style="display: flex; padding-left: 25px;">
+                                <a style="margin-right: 5px; margin-left: 0;">[>]</a>
+                                <span>Files</span>
+                            </li>
+                        </summary>
+
+                        <div id="fileList"></div>
+
+                        <div style="border-bottom: 1px solid rgba(185, 185, 185, 0.192);"></div>
+
+                    </details>
+                </li>
+            </details>
+        </ul>
     </div>
 
     <div id="terminal">
@@ -186,6 +223,19 @@
             document.getElementById("preview-iframe").src = url
         }
 
+        const addFiles = function(files) {
+            document.getElementById("fileList").innerHTML = ""
+
+            for (let datapoint of files) {
+                document.getElementById("fileList").innerHTML += `<li class="explorer-option" style="padding-left: 50px;">
+    <a>
+        <span>${datapoint.name}</span>
+        <a href="#" class="glow-btn">X</a>
+    </a>
+</li>`
+            }
+        }
+
         // language options
 
         const languages = [
@@ -225,6 +275,23 @@
             detectLanguage()
         }, 1);
     </script>
+
+    <script>
+        // data.editor-action
+        document.querySelectorAll("a").forEach((element) => {
+            if (element.getAttribute("data-editor-action")) {
+                const attribute = element.getAttribute("data-editor-action")
+
+                element.addEventListener('click', () => {
+                    if (attribute === "toggleExplorer") {
+
+                    }
+                })
+            }
+        })
+    </script>
+
+    <script src="./editor/content/context.js"></script>
 </body>
 
 </html>

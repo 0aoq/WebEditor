@@ -364,6 +364,7 @@ let __indexed = []
 
 function WORKER__FILE_LOADING() {
     if (window.localStorage.getItem("fileactions") != null) {
+        addFiles(JSON.parse(window.localStorage.getItem("fileactions")))
         for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
             if (!__indexed.includes(action.name) && action.active == true) {
                 __indexed.push(action.name)
@@ -493,6 +494,17 @@ document.querySelectorAll("a").forEach((element) => {
         const extensions = element.getAttribute("data-file").split(".")
 
         element.addEventListener('click', () => {
+                // settings file
+            if (window.localStorage.getItem("settings.json") == null) {
+                loadFile(`[
+    {
+        "minimapEnabled": true,
+        "addFilesToContextMenu": true,
+        "topbarEnabled": true
+    }
+]`, "json", "settings.json", false, false)
+                window.location.reload()
+            }
             openFile(element.getAttribute("data-file"), extensions[extensions.length - 1])
         })
     }

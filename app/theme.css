@@ -7,10 +7,12 @@
 body {
     overflow: hidden;
     font-family: Segoe WPC, Segoe UI, sans-serif;
+    color: white;
+    background: #1e2030;
 }
 
 #editor {
-    width: 100%;
+    width: 82vw;
     height: 100vh;
 }
 
@@ -19,7 +21,7 @@ body {
 }
 
 #editor.previewActive {
-    width: 50% !important;
+    width: 60% !important;
 }
 
 
@@ -300,7 +302,7 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     display: none;
     font-family: Segoe WPC, Segoe UI, sans-serif;
     font-weight: 525;
-    width: 100%;
+    width: 100% !important;
     background: white !important;
 }
 
@@ -315,12 +317,11 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     padding: 10px;
 }
 
-#titlebar .title {
-    margin-left: 1.2em;
+.title1 {
     font-weight: 605;
 }
 
-#titlebar .seperator {
+.space1 {
     color: rgb(238, 238, 238);
     margin-left: 10px;
     margin-right: 10px;
@@ -333,18 +334,131 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     font-weight: 505;
 }
 
-#titlebar a {
+#titlebar a,
+.glow-btn {
     color: white;
     transition: all 0.2s;
     text-decoration: none;
     cursor: pointer;
+    margin-right: 15px;
 }
 
-#titlebar a:hover {
+#titlebar a:hover,
+.glow-btn:hover {
     color: rgb(226, 226, 226);
     text-shadow: 0 0 1px #000, 0 0 5px #ffffff3d, 0 0 3px #ffffff3d, 0 0 14px #ffffff3d !important;
 }
 
-#titlebar a:nth-child(even) {
-    margin-left: 10px;
+
+/* Explorer */
+
+#explorer {
+    height: 100vh;
+    width: 18vw;
+    background: #1e2030;
+    /* padding: 0.5em; */
+    gap: 0.2em;
+}
+
+#preview.active+#explorer {
+    display: none !important;
+}
+
+#explorer li {
+    transition: all 0.1s;
+    display: flex;
+}
+
+#explorer li:nth-child(1) {
+    padding: 0.2em;
+}
+
+#explorer li.explorer-option {
+    padding: 0.2em;
+}
+
+#explorer details summary {
+    border-bottom: 1px solid rgba(185, 185, 185, 0.192);
+    transition: all 0.1s;
+}
+
+#explorer li a:not(.glow-btn) {
+    margin-right: 5px;
+    margin-left: 0;
+    font-weight: 400;
+}
+
+
+/* #explorer li:hover {
+    background: #2f334d;
+} */
+
+#explorer details summary:hover {
+    background: #2f334d;
+}
+
+#explorer details li.explorer-option:hover {
+    background: #2f334d;
+}
+
+#explorer li a {
+    font-weight: 550;
+    margin-left: auto;
+}
+
+#explorer li:not(.explorer-outside-item) {
+    padding-left: 25px;
+}
+
+#explorer li details {
+    width: 100%;
+}
+
+#explorer details {
+    padding: 0;
+}
+
+#explorer li>details[open] {
+    border-bottom: none;
+}
+
+details>summary::-webkit-details-marker {
+    display: none;
+}
+
+details summary {
+    list-style: none;
+}
+
+
+/* context menu */
+
+.context-menu {
+    width: 180px;
+    position: absolute;
+    display: none;
+    z-index: 5;
+    border-radius: 0.4rem;
+    background: #191a2a;
+}
+
+.context-menu .menu-options {
+    list-style: none;
+    padding: 8px;
+    margin: 0;
+}
+
+.context-menu .menu-options .menu-option {
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0.3rem 0.8rem;
+    margin: 0.1rem;
+    cursor: pointer;
+    transition: all 0.1s !important;
+    border-radius: 0.4em;
+}
+
+.context-menu .menu-options .menu-option:hover {
+    background: #1e2030;
 }
