@@ -16,11 +16,11 @@ body {
     height: 100vh;
 }
 
-#editor.terminalActive {
-    height: 82vh !important;
+#editor.previewActive {
+    width: 60% !important;
 }
 
-#editor.previewActive {
+#editor.terminalActive {
     width: 60% !important;
 }
 
@@ -282,13 +282,13 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 /* extra windows */
 
 #terminal {
-    height: 18vh;
+    height: 100vh;
     border: none;
     display: none;
     color: rgb(226, 226, 226);
     font-family: Segoe WPC, Segoe UI, sans-serif;
     font-weight: 525;
-    padding: 5px;
+    width: 25vw;
     border: solid 1px #191a2a;
 }
 
@@ -354,7 +354,7 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 
 #explorer {
     height: 100vh;
-    width: 18vw;
+    width: 25vw;
     background: #1e2030;
     /* padding: 0.5em; */
     gap: 0.2em;

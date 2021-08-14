@@ -25,18 +25,22 @@ window.addEventListener("mousedown", e => {
 
 window.addEventListener("contextmenu", e => {
     e.preventDefault();
-    document.querySelector(".menu-options").innerHTML = ""
+    if (!e.target.classList.contains("view-lines") &&
+        !e.target.classList.contains("view-line")
+    ) {
+        document.querySelector(".menu-options").innerHTML = ""
 
-    document.querySelector(".menu-options").insertAdjacentHTML("beforeend", `
-        <li class="menu-option onhover shadow" context-action="history-back">Back</li>
-        <li class="menu-option onhover shadow" context-action="reload">Reload</li>
-    `)
+        document.querySelector(".menu-options").insertAdjacentHTML("beforeend", `
+<li class="menu-option onhover shadow" context-action="history-back">Back</li>
+<li class="menu-option onhover shadow" context-action="reload">Reload</li>
+        `)
 
-    const origin = {
-        left: e.pageX,
-        top: e.pageY
-    };
-    setPosition(origin);
+        const origin = {
+            left: e.pageX,
+            top: e.pageY
+        };
+        setPosition(origin);
+    }
 
     return false;
 });

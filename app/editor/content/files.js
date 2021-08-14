@@ -394,30 +394,7 @@ function WORKER__FILE_LOADING() {
                         id: "delete-file-" + action.id.split("open-file-")[1],
                         label: "Delete " + action.label.split("Open ")[1],
                         run: function() {
-                            if (id != action.name) {
-                                if (action.name == "project_settings.json") {
-                                    window.sessionStorage.setItem("previewopen", false)
-                                }
-
-                                window.localStorage.removeItem(action.name)
-
-                                const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
-
-                                for (let __$ of parsed) {
-                                    if (__$.name == action.name) {
-                                        __$.active = false
-                                        __$.name = ""
-                                        __$.id = ""
-                                        __$.label = ""
-                                    }
-                                }
-
-                                window.localStorage.setItem("fileactions", JSON.stringify(parsed))
-
-                                window.location.reload()
-                            } else {
-                                alert("Cannot delete current file.")
-                            }
+                            deleteFile(action.name)
                         }
                     })
                 }
@@ -475,6 +452,34 @@ export async function openFile (name, type) {
     }
 }
 
+export async function deleteFile (name) {
+    const action = {name: name}
+    if (id != action.name) {
+        if (action.name == "project_settings.json") {
+            window.sessionStorage.setItem("previewopen", false)
+        }
+
+        window.localStorage.removeItem(action.name)
+
+        const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
+
+        for (let __$ of parsed) {
+            if (__$.name == action.name) {
+                __$.active = false
+                __$.name = ""
+                __$.id = ""
+                __$.label = ""
+            }
+        }
+
+        window.localStorage.setItem("fileactions", JSON.stringify(parsed))
+
+        window.location.reload()
+    } else {
+        alert("Cannot delete current file.")
+    }
+}
+
 if (window.localStorage.getItem("fileactions") == null) {
     window.localStorage.setItem("fileactions", JSON.stringify([]))
 }
@@ -489,26 +494,36 @@ if (id && window.localStorage.getItem("fileactions") != null) {
 }
 
 // extra titlebar buttons
-document.querySelectorAll("a").forEach((element) => {
-    if (element.getAttribute("data-file")) {
-        const extensions = element.getAttribute("data-file").split(".")
+function __worker_1() {
+    document.querySelectorAll("a").forEach((element) => {
+        if (element.getAttribute("data-file")) {
+            const extensions = element.getAttribute("data-file").split(".")
+    
+            element.addEventListener('click', () => {
+                    // settings file
+                if (window.localStorage.getItem("settings.json") == null) {
+                    loadFile(`[
+        {
+            "minimapEnabled": true,
+            "addFilesToContextMenu": true,
+            "topbarEnabled": true
+        }
+    ]`, "json", "settings.json", false, false)
+                    window.location.reload()
+                }
+                openFile(element.getAttribute("data-file"), extensions[extensions.length - 1])
+                __worker_1()
+            })
+        } else if (element.getAttribute("data-delete-file")) {    
+            element.addEventListener('click', () => {
+                deleteFile(element.getAttribute("data-delete-file"))
+                __worker_1()
+            })
+        }
+    })
+}
 
-        element.addEventListener('click', () => {
-                // settings file
-            if (window.localStorage.getItem("settings.json") == null) {
-                loadFile(`[
-    {
-        "minimapEnabled": true,
-        "addFilesToContextMenu": true,
-        "topbarEnabled": true
-    }
-]`, "json", "settings.json", false, false)
-                window.location.reload()
-            }
-            openFile(element.getAttribute("data-file"), extensions[extensions.length - 1])
-        })
-    }
-})
+__worker_1()
 
 export default {
     file_reader__readFile,
