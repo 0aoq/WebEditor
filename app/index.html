@@ -36,8 +36,8 @@
 
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 
-    <!-- xterm -->
-    <!-- <link rel="stylesheet" href="../node_modules/xterm/css/xterm.css"> -->
+    <!-- misc -->
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 </head>
 
 <body>
@@ -48,11 +48,12 @@
 
     <!-- App -->
     <div id="titlebar">
-        <span class="title1" style="margin-left: 1.5em;">Monaco Test</span>
+        <span class="title1" style="margin-left: 0.95em;">Monaco Test</span>
         <span class="space1">•</span>
         <span id="currentFile">Untitled</span>
         <span class="space1">•</span>
         <a href="https://github.com/0aoq/ubiquitous-engine" target="__blank">Github</a>
+        <a href="https://github.com/0aoq/ubiquitous-engine/issues/new" target="__blank">Issue</a>
         <a data-file="settings.json">Settings</a>
         <a data-editor-action="toggleExplorer">Explorer</a>
     </div>
@@ -62,7 +63,7 @@
             <details>
                 <summary>
                     <li class="explorer-outside-item">
-                        <a style="margin-right: 5px; margin-left: 0;" class="glow-btn">[>]</a>
+                        <ion-icon name="folder"></ion-icon>
                         <span class="title1">Monaco</span>
                     </li>
                 </summary>
@@ -72,7 +73,7 @@
                     <details>
                         <summary>
                             <li class="explorer-outside-item" style="display: flex; padding-left: 25px;">
-                                <a style="margin-right: 5px; margin-left: 0;">[>]</a>
+                                <ion-icon name="folder"></ion-icon>
                                 <span>Files</span>
                             </li>
                         </summary>

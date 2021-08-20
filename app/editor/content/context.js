@@ -32,8 +32,14 @@ window.addEventListener("contextmenu", e => {
 
         document.querySelector(".menu-options").insertAdjacentHTML("beforeend", `
 <li class="menu-option onhover shadow" context-action="history-back">Back</li>
-<li class="menu-option onhover shadow" context-action="reload">Reload</li>
+<li class="menu-option onhover shadow" onclick="window.location.reload()">Reload</li>
         `)
+
+        if (e.target.classList.contains("isFileName")) {
+            document.querySelector(".menu-options").insertAdjacentHTML("beforeend", `
+<li class="menu-option onhover shadow" onmousedown="renameFile('${e.target.innerText}', '${e.target.id}')">Rename</li>
+            `)
+        }
 
         const origin = {
             left: e.pageX,

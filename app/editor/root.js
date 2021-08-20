@@ -38,3 +38,25 @@ const __ = function(name) {
         return '#fff'
     }
 }
+
+// Details icon
+
+let __details_index = 0
+let __indexed_details = []
+
+setInterval(() => {
+    document.querySelectorAll("details").forEach((element) => {
+        if (!__indexed_details.includes(element)) {
+            __details_index++
+            element.id = "detailsList-" + __details_index
+            __indexed_details.push(element)
+        }
+    })
+
+    document.querySelectorAll("details").forEach((element) => {
+        document.querySelector(`details#${element.id} ion-icon`).setAttribute("name", "folder") // closed icon
+
+        const openIcon = document.querySelector(`details[open]#${element.id} ion-icon`)
+        if (openIcon) { openIcon.setAttribute("name", "folder-open") }
+    })
+}, 1);

@@ -91,7 +91,8 @@ monaco.editor.defineTheme('theme', {
     }
 })
 
-if (emmetMonaco) {
+if (window.location.href !== "https://0aoq.github.io/ubiquitous-engine/app/") {
+    console.log("Emmet enabled!")
     emmetMonaco.emmetHTML()
     emmetMonaco.emmetCSS()
     emmetMonaco.emmetJSX()
@@ -132,7 +133,6 @@ editor.onDidChangeModelContent((event) => {
 })
 
 // extra windows
-
 const createTerminal = function() {
     document.getElementById("terminal").classList.add("active")
     document.getElementById("editor").classList.add("terminalActive")
@@ -148,23 +148,63 @@ const previewIframe = function(url) {
     document.getElementById("preview-iframe").src = url
 }
 
+// auto icon
+const fileIcons = [
+    { extension: "js", icon: "logo-javascript" },
+    { extension: "jsx", icon: "logo-react" },
+    { extension: "css", icon: "logo-css3" },
+    { extension: "html", icon: "logo-html5" },
+    { extension: "md", icon: "logo-markdown" },
+    { extension: "py", icon: "logo-python" },
+    { extension: "mjs", icon: "logo-nodejs" },
+    { extension: "ts", icon: "logo-javascript" },
+
+    { extension: "npmignore", icon: "logo-npm" },
+    { extension: "gitignore", icon: "git-branch-outline" },
+
+    { extension: "sh", icon: "terminal" },
+    { extension: "cmd", icon: "terminal" },
+    { extension: "bash", icon: "terminal" },
+
+    { extension: "none", icon: "document-text-outline" },
+]
+
+function getFileIcon(extension) {
+    for (let datapoint of fileIcons) {
+        if (datapoint.extension === extension) {
+            return datapoint.icon
+        }
+    }
+
+    return fileIcons[fileIcons.length - 1].icon
+}
+
+// add files to explorer
 const addFiles = function(files) {
     document.getElementById("fileList").innerHTML = ""
 
     for (let datapoint of files) {
         if (datapoint.active && datapoint.name !== "settings.json") {
-            document.getElementById("fileList").innerHTML += `<li class="explorer-option" style="padding-left: 50px;">
-    <a data-file="${datapoint.name}">
-        <span>${datapoint.name}</span>
-        <a href="#" class="glow-btn" data-delete-file="${datapoint.name}">X</a>
+            const $array1 = datapoint.name.split(".")
+            const extension = $array1[$array1.length - 1]
+
+            document.getElementById("fileList").innerHTML += `<li class="explorer-option" style="padding-left: 50px;" id="wrapper:${datapoint.__id || 0}">
+    <a data-file="${datapoint.name}" id="button:${datapoint.__id || 0}">
+        <ion-icon name="${getFileIcon(extension)}"></ion-icon>
+        <span class="isFileName" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
+        <a href="javascript:" class="glow-btn" data-delete-file="${datapoint.name}"><ion-icon name="close-circle-outline"></ion-icon></a>
     </a>
 </li>`
         }
     }
 }
 
-// language options
+// rename file
+const renameFile = function(file, id) {
+    console.log(file, id)
+}
 
+// language options
 const languages = [
     'javascript',
     'lua',

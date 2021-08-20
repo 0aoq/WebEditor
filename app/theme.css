@@ -391,7 +391,7 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 #explorer {
     height: 100vh;
     margin-top: 2em;
-    width: 345px;
+    width: 385px;
     background: #202233;
     /* padding: 0.5em; */
     gap: 0.2em;
@@ -441,6 +441,10 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     cursor: not-allowed;
 }
 
+#explorer details li span {
+    font-size: 1em;
+}
+
 #explorer li a {
     font-weight: 550;
     margin-left: auto;
@@ -461,6 +465,23 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 
 #explorer li>details[open] {
     border-bottom: none;
+}
+
+#explorer ion-icon {
+    margin-right: 5px;
+    margin-top: .2em;
+    /* font-size: 1.25em; */
+}
+
+#explorer a ion-icon {
+    /* position icon */
+    position: absolute;
+}
+
+#explorer a span {
+    /* position icon */
+    margin-left: 25px;
+    margin-right: 50px;
 }
 
 details>summary::-webkit-details-marker {

@@ -49,6 +49,7 @@ function getConversion(origin, to) {
     }
 }
 
+let filesint = window.localStorage.getItem("filesint") || 0
 export const loadFile = function(content, lang, name, addToContext = true, autoswitch = true) {
     if (testLang(lang)) {
         let conv = getConversion(lang)
@@ -60,11 +61,15 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
 
         const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
 
+        filesint++
+        window.localStorage.setItem("filesint", filesint)
+
         if (window.localStorage.getItem(name) == null) {
             parsed.push({
                 id: "open-file-" + name.replaceAll(".", ""),
                 label: "Open " + name,
                 name: name,
+                __id: `${name}-${filesint}`,
                 lang: lang,
                 active: true,
                 addToContext: addToContext
@@ -80,6 +85,7 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
 
         WORKER__MAIN_CHECKS()
         WORKER__FILE_LOADING()
+        __worker_1()
     } else {
         editor.getModel().setValue("ERROR: File type is not supported.")
         monaco.editor.setModelLanguage(editor.getModel(), "plaintext");
