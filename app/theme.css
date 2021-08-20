@@ -4,6 +4,21 @@
     padding: 0;
 }
 
+:root {
+    /* red */
+    --syntax-1: #f97e72;
+    /* pink */
+    --syntax-2: #f92aad;
+    /* blue */
+    --syntax-3: #6d77b3;
+    /* green */
+    --syntax-4: #55c588;
+    /* light yellow */
+    --syntax-5: #f4eee4;
+    /* purple */
+    --syntax-6: #b47fd8;
+}
+
 body {
     overflow: hidden;
     font-family: Segoe WPC, Segoe UI, sans-serif;
@@ -12,8 +27,8 @@ body {
 }
 
 #editor {
-    width: 82vw;
-    height: 100vh;
+    width: 100% !important;
+    margin-top: 2em;
 }
 
 #editor.previewActive {
@@ -24,13 +39,12 @@ body {
     width: 60% !important;
 }
 
-
-/* .view-line span {
-    font-family: 'Fira Code', sans-serif !important;
-} */
+.view-line span {
+    font-family: 'Fira Code', 'Courier New', monospace !important;
+}
 
 .mtk6 {
-    color: #f92aad !important;
+    color: var(--syntax-2) !important;
     text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3 !important;
 }
 
@@ -38,18 +52,19 @@ body {
 .mtk7,
 .mtk9 {
     /* comments/idk/operators */
-    color: #6d77b3 !important;
+    color: var(--syntax-3) !important;
 }
 
 .mtk4,
 .mtk8 {
-    color: #f97e72 !important;
+    color: var(--syntax-1) !important;
+    font-weight: 600;
     text-shadow: 0 0 1px #000, 0 0 5px #fc1f2e3d, 0 0 3px #fc1f2e3d, 0 0 14px #fc1f2e3d !important;
 }
 
 .mtk5 {
     /* string */
-    color: #55c588 !important;
+    color: var(--syntax-4) !important;
     text-shadow: 0 0 1px #001716, 0 0 2px #55c58752, 0 0 3px #55c58752, 0 0 5px #55c58752 !important;
 }
 
@@ -69,7 +84,7 @@ body {
 /* mtk8: variable type */
 
 .mtk14 {
-    color: #f4eee4 !important;
+    color: var(--syntax-5) !important;
     text-shadow: 0 0 2px #393a33, 0 0 8px #f39f0575, 0 0 2px #f39f0575 !important;
 }
 
@@ -292,6 +307,13 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     border: solid 1px #191a2a;
 }
 
+#terminal iframe {
+    width: 100%;
+    height: 100vh;
+    outline: none;
+    border: none;
+}
+
 #terminal.active {
     display: block;
 }
@@ -311,10 +333,25 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 }
 
 #titlebar {
-    background: #222436;
-    border-bottom: #1f2030 2px solid;
+    display: flex;
+    border-bottom: solid 1px #191a2a;
+    background: #202233 !important;
     color: white;
-    padding: 10px;
+    gap: 0.05em;
+    position: fixed;
+    z-index: 100;
+    width: 100vw;
+}
+
+#titlebar span,
+#titlebar a {
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#titlebar a:hover {
+    background: #26283d9d;
 }
 
 .title1 {
@@ -323,8 +360,6 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 
 .space1 {
     color: rgb(238, 238, 238);
-    margin-left: 10px;
-    margin-right: 10px;
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
@@ -354,10 +389,12 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 
 #explorer {
     height: 100vh;
-    width: 25vw;
-    background: #1e2030;
+    margin-top: 2em;
+    width: 345px;
+    background: #202233;
     /* padding: 0.5em; */
     gap: 0.2em;
+    border-left: solid 1px #191a2a;
 }
 
 #preview.active+#explorer {
@@ -393,17 +430,20 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     background: #2f334d;
 } */
 
-#explorer details summary:hover {
-    background: #2f334d;
+#explorer details summary:hover,
+#explorer details li.explorer-option:hover {
+    background: #26283d9d;
+    cursor: pointer;
 }
 
-#explorer details li.explorer-option:hover {
-    background: #2f334d;
+#explorer details li.explorer-option {
+    cursor: not-allowed;
 }
 
 #explorer li a {
     font-weight: 550;
     margin-left: auto;
+    cursor: pointer;
 }
 
 #explorer li:not(.explorer-outside-item) {

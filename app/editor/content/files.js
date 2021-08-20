@@ -37,6 +37,7 @@ function testLang(lang) {
 
 let conversions = [
     { origin: "application/x-javascript", to: "javascript" },
+    { origin: "js", to: "javascript" },
     { origin: "text/plain", to: "plaintext" }
 ]
 
@@ -55,7 +56,6 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
         let conv = getConversion(lang)
         if (conv) {
             if (lang === conv.origin) {
-                action$(false, true, `Expanded language type from "${lang}" to "javascript"`)
                 lang = conv.to
             }
         }
@@ -293,28 +293,33 @@ export const WORKER__MAIN_CHECKS = function() {
         })
     }
     
+    const settingsFile = `[
+    {
+        "minimapEnabled": false,
+        "addFilesToContextMenu": true,
+        "topbarEnabled": true,
+        "editorFontSize": "14px"
+    }
+]`
+    
     // settings file
     if (window.localStorage.getItem("settings.json") == null) {
-        loadFile(`[
-    {
-        "minimapEnabled": true,
-        "addFilesToContextMenu": true,
-        "topbarEnabled": true
-    }
-]`, "json", "settings.json", false, false)
+        loadFile(settingsFile, "json", "settings.json", false, false)
         window.location.reload()
     } else {
         const settings = JSON.parse(window.localStorage.getItem("settings.json"))[0]
     
         if (settings) {
-            settings.minimapEnabled = settings.minimapEnabled || true
+            settings.minimapEnabled = settings.minimapEnabled || false
             settings.topbarEnabled = settings.topbarEnabled || true
             settings.addFilesToContextMenu = settings.addFilesToContextMenu || true
+            settings.editorFontSize = settings.editorFontSize || "14px"
     
             editor.updateOptions({
                 minimap: {
                     enabled: settings.minimapEnabled
-                }
+                },
+                fontSize: settings.editorFontSize
             })
     
             if (!settings.topbarEnabled) {
@@ -417,6 +422,15 @@ function WORKER__FILE_LOADING() {
             js_snippet('Insert For Loop', `for (let i = 0; i < 10; i++) {
     // do whatever
 }`)
+            js_snippet('Form Submit Listener', `const form = document.querySelector('form')
+form.addEventListener('submit', e => {
+    e.preventDefault()
+    // do whatever
+})`)
+            js_snippet('Button Click Listener', `const a = document.querySelector('a')
+a.addEventListener('click', () => {
+    // do whatever
+})`)
         }
     }
 }
@@ -443,8 +457,6 @@ export async function openFile (name, type) {
         editor.setValue(window.localStorage.getItem(name))
         monaco.editor.setModelLanguage(editor.getModel(), type)
         id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
-        action$(false, false, `Updated content of editor to the requested file`)
-        action$(false, false, `Changed language to ${type}`)
         WORKER__MAIN_CHECKS()
         WORKER__FILE_LOADING()
     } else {
@@ -502,16 +514,19 @@ function __worker_1() {
             element.addEventListener('click', () => {
                     // settings file
                 if (window.localStorage.getItem("settings.json") == null) {
-                    loadFile(`[
-        {
-            "minimapEnabled": true,
-            "addFilesToContextMenu": true,
-            "topbarEnabled": true
-        }
-    ]`, "json", "settings.json", false, false)
+                    loadFile(settingsFile, "json", "settings.json", false, false)
                     window.location.reload()
                 }
-                openFile(element.getAttribute("data-file"), extensions[extensions.length - 1])
+
+                let lang = extensions[extensions.length - 1]
+                let conv = getConversion(lang)
+                if (conv) {
+                    if (lang === conv.origin) {
+                        lang = conv.to
+                    }
+                }
+
+                openFile(element.getAttribute("data-file"), lang)
                 __worker_1()
             })
         } else if (element.getAttribute("data-delete-file")) {    
@@ -525,6 +540,10 @@ function __worker_1() {
 
 __worker_1()
 
+setInterval(() => {
+    WORKER__MAIN_CHECKS()
+}, 1000);
+
 export default {
     file_reader__readFile,
     file_reader__writeFile,
@@ -532,5 +551,6 @@ export default {
     loadPreviewFile,
     addFilesToContextMenu,
     openFile,
-    WORKER__MAIN_CHECKS
+    WORKER__MAIN_CHECKS,
+    WORKER__FILE_LOADING
 }

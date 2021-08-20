@@ -65,7 +65,29 @@ monaco.editor.defineTheme('theme', {
         "menu.selectionBackground": __('theme_gray_4'),
         "menu.selectionForeground": __('theme_sky_blue'),
         // "menu.selectionBorder": "#00000030",
-        "menu.separatorBackground": __('theme_gray_10')
+        "menu.separatorBackground": __('theme_gray_10'),
+
+        // misc
+        "editorSuggestWidget.background": __('theme_gray_2'),
+        "editorSuggestWidget.foreground": __('theme_gray_8'),
+        "editorSuggestWidget.highlightForeground": __('theme_cyan'),
+        "editorSuggestWidget.selectedBackground": __('theme_gray_5'),
+        "editorSuggestWidget.border": "#00000033",
+        "editorWidget.background": __('theme_gray_3'),
+        "editorWidget.resizeBorder": __('theme_blue'),
+        "input.background": __('theme_gray_2'),
+        "input.foreground": __('theme_gray_10'),
+        "input.placeholderForeground": __('theme_gray_10'),
+        "input.border": "#00000066",
+        "inputValidation.errorBackground": "#c53b53",
+        "inputValidation.errorForeground": "#ffffff",
+        "inputValidation.errorBorder": __('theme_dark_red'),
+        "inputValidation.infoBackground": "#446bbb",
+        "inputValidation.infoForeground": "#ffffff",
+        "inputValidation.infoBorder": __('theme_blue'),
+        "inputValidation.warningBackground": "#ad7c43",
+        "inputValidation.warningForeground": "#ffffff",
+        "inputValidation.warningBorder": __('theme_yellow'),
     }
 })
 
@@ -80,7 +102,7 @@ let editor = monaco.editor.create(document.getElementById('editor'), {
     ].join('\n'),
     language: 'plaintext',
     theme: 'theme',
-    fontSize: "15px",
+    fontSize: "14px",
     minimap: {
         enabled: false
     },
@@ -89,7 +111,7 @@ let editor = monaco.editor.create(document.getElementById('editor'), {
     fontWeight: "525",
     formatOnType: true,
     formatOnPaste: true,
-    autoClosingDelete: 'always'
+    autoClosingDelete: 'always',
 });
 
 // state save
@@ -128,7 +150,7 @@ const addFiles = function(files) {
     document.getElementById("fileList").innerHTML = ""
 
     for (let datapoint of files) {
-        if (datapoint.active) {
+        if (datapoint.active && datapoint.name !== "settings.json") {
             document.getElementById("fileList").innerHTML += `<li class="explorer-option" style="padding-left: 50px;">
     <a data-file="${datapoint.name}">
         <span>${datapoint.name}</span>

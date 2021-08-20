@@ -27,7 +27,7 @@ const ThemeColors = {
     theme_gray_4: '#222436',
     theme_gray_3: '#1e2030',
     theme_gray_2: '#191a2a',
-    theme_gray_1: '#131421'
+    theme_gray_1: '#131421',
 }
 
 const __ = function(name) {

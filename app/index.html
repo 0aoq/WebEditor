@@ -58,12 +58,6 @@
     </div>
 
     <div style="display: flex;">
-        <iframe src="https://0aoq.github.io/Console" id="terminal"></iframe>
-        <div id="editor" aria-label="Main code editor (Monaco)"></div>
-        <div id="preview" aria-label="HTML5 Previewer">
-            <iframe frameborder="0" style="height: 100%; width: 100%;" id="preview-iframe" aria-label="Blob renderer for HTML5 preview"></iframe>
-        </div>
-
         <ul id="explorer">
             <details>
                 <summary>
@@ -91,6 +85,13 @@
                 </li>
             </details>
         </ul>
+
+        <div id="editor" aria-label="Main code editor (Monaco)"></div>
+        <div id="preview" aria-label="HTML5 Previewer">
+            <iframe frameborder="0" style="height: 100%; width: 100%;" id="preview-iframe" aria-label="Blob renderer for HTML5 preview"></iframe>
+        </div>
+
+        <div id="terminal"><iframe src="https://0aoq.github.io/Console"></iframe></div>
     </div>
 
     <script src="./editor/editor.js"></script>

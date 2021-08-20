@@ -48,6 +48,7 @@ const actions = [{
         editor.getValue().split(/\r?\n/).forEach((line) => {
             line = line.replaceAll("    ", "")
             if (line.split(": ")[0] === `"localSaveAs`) {
+                console.log("localSaveAs tag found")
                 files.loadFile(editor.getValue(), editor.getModel().getLanguageIdentifier().language, line.split(": ")[1].split('"')[0])
             }
         })
@@ -92,6 +93,7 @@ const actions = [{
         action$(false, false, `Updated content of editor to the requested file`)
         action$(false, false, `Changed language to ${type}`)
         files.WORKER__MAIN_CHECKS()
+        files.WORKER__FILE_LOADING()
     },
 }, {
     id: "create-terminal",
