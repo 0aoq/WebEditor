@@ -39,9 +39,10 @@ body {
     width: 60% !important;
 }
 
-.view-line span {
+
+/* .view-line span {
     font-family: 'Fira Code', 'Courier New', monospace !important;
-}
+} */
 
 .mtk6 {
     color: var(--syntax-2) !important;

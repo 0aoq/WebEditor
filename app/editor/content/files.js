@@ -1,5 +1,3 @@
-import * as FileSaver from '../../../node_modules/file-saver/dist/FileSaver.js'
-
 let id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
 
 export const action$ = function(failed, side, action) {
@@ -89,44 +87,83 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
     }
 }
 
-export const file_reader__readFile = function() { // load files
-    let input = document.createElement('input')
-    input.type = 'file'
-    input.multiple = 'multiple'
+let FS_FileHandle = null
+export const file_reader__readFile = async function() { // load files
+    if (window.showOpenFilePicker) {
+        // THE BROWSER SUPPORTS THE EASY METHOD
+        console.log("Active browser supports the requested api.");
 
-    input.onchange = e => {
-        for (let file of e.target.files) {
-            let reader = new FileReader();
-            reader.readAsText(file, 'UTF-8');
+        [FS_FileHandle] = await window.showOpenFilePicker()
+        const file = await FS_FileHandle.getFile()
+        const content = await file.text()
 
-            reader.onload = readerEvent => {
-                let content = readerEvent.target.result
-                let lang = file.type
+        const $array = file.name.split(".")
+        const lang = getConversion($array[$array.length - 1])
 
-                document.title = `${file.name} - Monaco Test`
-                loadFile(content, lang, file.name, addFilesToContextMenu, true)
+        document.title = `${file.name} - Monaco Test`
+        loadFile(content, lang, file.name, addFilesToContextMenu, true)
+    } else {
+        // NO EASY METHOD
+        console.log("Active browser does not support the requested api.");
+
+        let input = document.createElement('input')
+        input.type = 'file'
+        input.multiple = 'multiple'
+
+        input.onchange = e => {
+            for (let file of e.target.files) {
+                let reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+
+                reader.onload = readerEvent => {
+                    let content = readerEvent.target.result
+                    let lang = file.type
+
+                    document.title = `${file.name} - Monaco Test`
+                    loadFile(content, lang, file.name, addFilesToContextMenu, true)
+                }
             }
         }
-    }
 
-    input.click();
+        input.click()
+    }
 }
 
-export const file_reader__writeFile = function(content) {
-    function getLanguage(lang) {
-        let conv = getConversion(null, lang)
+const writeFile = async function(fileHandle, contents) {
+    const writable = await fileHandle.createWritable();
+    await writable.write(contents);
+    await writable.close();
+}
 
-        if (conv) {
-            return conv.origin
-        } else {
-            return lang
+export const file_reader__writeFile = async function(content) {
+    const __handle = await window.showSaveFilePicker()
+    writeFile(__handle, editor.getValue())
+
+    return __handle
+}
+
+// prevent save page
+let ctrl = false
+let shift = false
+window.addEventListener("keydown", e => {
+    if (e.key === "Control") {
+        ctrl = true
+        setTimeout(() => { ctrl = false }, 1000)
+    } else if (e.key === "Shift") {
+        shift = true
+        setTimeout(() => { shift = false }, 1000)
+    } else if (e.key === "s" && ctrl === true) {
+        e.preventDefault()
+
+        if (FS_FileHandle) {
+            writeFile(FS_FileHandle, editor.getValue())
         }
+    } else if (e.key === "n" && ctrl === true && shift === true) {
+        e.preventDefault()
     }
+})
 
-    let blob = new Blob([content], { type: `${getLanguage(editor.getModel().getLanguageIdentifier().language)};charset=utf-8` });
-    FileSaver.saveAs(blob, window.localStorage.getItem("currentFile"))
-}
-
+// --
 const getGeneratedPageURL = ({ html, css, js, md }) => {
         const getBlobURL = (code, type) => {
             const blob = new Blob([code], { type })

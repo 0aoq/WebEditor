@@ -91,9 +91,11 @@ monaco.editor.defineTheme('theme', {
     }
 })
 
-emmetMonaco.emmetHTML()
-emmetMonaco.emmetCSS()
-emmetMonaco.emmetJSX()
+if (emmetMonaco) {
+    emmetMonaco.emmetHTML()
+    emmetMonaco.emmetCSS()
+    emmetMonaco.emmetJSX()
+}
 
 let editor = monaco.editor.create(document.getElementById('editor'), {
     value: [
