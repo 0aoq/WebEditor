@@ -1,4 +1,5 @@
 let id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
+const addFiles = window.explorer.renderExplorer
 
 export const action$ = function(failed, side, action) {
     if (side) {
@@ -148,26 +149,23 @@ export const file_reader__writeFile = async function(content) {
     return __handle
 }
 
-// prevent save page
-let ctrl = false
-let shift = false
 window.addEventListener("keydown", e => {
-    if (e.key === "Control") {
-        ctrl = true
-        setTimeout(() => { ctrl = false }, 1000)
-    } else if (e.key === "Shift") {
-        shift = true
-        setTimeout(() => { shift = false }, 1000)
-    } else if (e.key === "s" && ctrl === true) {
+    if (e.key === "s" && e.ctrlKey) {
         e.preventDefault()
 
         if (FS_FileHandle) {
             writeFile(FS_FileHandle, editor.getValue())
         }
-    } else if (e.key === "n" && ctrl === true && shift === true) {
+    } else if (e.key === "n" && e.ctrlKey && e.shiftKey) {
         e.preventDefault()
     }
 })
+
+document.onkeydown = function(e) {
+    // bad method to stop the opening of the dev tools; fix later maybe?
+    if (e.keyCode == 123) { return false }
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false }
+}
 
 // --
 const getGeneratedPageURL = ({ html, css, js, md }) => {

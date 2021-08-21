@@ -72,7 +72,7 @@ const actions = [{
 
         window.localStorage.removeItem("fileactions")
         window.localStorage.removeItem("filesint")
-        window.location.href = "?"
+        window.location.reload()
     },
 }, {
     id: "open-blank",
