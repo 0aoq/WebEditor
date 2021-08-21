@@ -41,7 +41,8 @@ function testLang(lang) {
 let conversions = [
     { origin: "application/x-javascript", to: "javascript" },
     { origin: "js", to: "javascript" },
-    { origin: "text/plain", to: "plaintext" }
+    { origin: "text/plain", to: "plaintext" },
+    { origin: "py", to: "python" }
 ]
 
 function getConversion(origin, to) {

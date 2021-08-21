@@ -58,7 +58,7 @@ window.explorer = {
             <span class="isFileName" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
         </a>`
     },
-    createDirectory: function(parent, name, content, padding = 15, addLine = true) {
+    createDirectory: function(parent, name, content, padding = 15, addLine = true, insertWhere = `beforeend`) {
         function __addLine() {
             if (addLine) { return `<div style="border-bottom: 1px solid rgba(185, 185, 185, 0.192);"></div>` } else { return `` }
         }
@@ -79,13 +79,13 @@ window.explorer = {
             }
         }
 
-        parent.innerHTML += `<li class="explorer-outside-item">
+        parent.insertAdjacentHTML(insertWhere, `<li class="explorer-outside-item">
         <details>
             ${__addLine1()}
             <div id="${name}">${content}</div>
             ${__addLine()}
         </details>
-    </li>`
+    </li>`)
     },
     renderExplorer: function(files) {
         let defaultPadding = 15
@@ -106,6 +106,7 @@ window.explorer = {
                             parent = document.getElementById(datapoint.folders[datapoint.folders.indexOf(folder) - 1]) // the folder just before
                         } else { parent = document.getElementById("fileList") }
 
+                        // calculate extra padding
                         for (let i = 1; i < 100; i++) {
                             if (
                                 parent === document.getElementById(
@@ -115,10 +116,12 @@ window.explorer = {
                                 padding += i * 5
                                 if (padding !== 37) {
                                     padding += NEXT_FOLDER_PADDING_ADD
-                                    NEXT_FOLDER_PADDING_ADD += 5
+                                    NEXT_FOLDER_PADDING_ADD += 7
                                 }
                             }
                         }
+
+                        if (padding < 22) { padding = 22 } // align first folder
 
                         // remove extra nodes with same id
                         if (document.getElementById(`wrapper:${datapoint.__id}`)) { document.getElementById(`wrapper:${datapoint.__id}`).remove() }
@@ -135,7 +138,8 @@ window.explorer = {
                                 `,
 
                                 padding,
-                                false
+                                false,
+                                "afterbegin"
                             )
                         } else {
                             // add file to folder if it already exists
