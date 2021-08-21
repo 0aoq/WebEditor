@@ -87,7 +87,19 @@ window.explorer = {
             }
         }
     },
-    getFileIcon: getFileIcon
+    getFileIcon: getFileIcon,
+    splitPath: function(string) {
+        const ____ = string.split("/")
+        const file = ____[____.length - 1] // the last item should always be the file
+
+        let paths = []
+        for (let path of ____) { if (path !== file) { paths.push(path) } }
+
+        return {
+            paths: paths,
+            file: file
+        }
+    }
 }
 
 // Folder/directory icon (open and close)

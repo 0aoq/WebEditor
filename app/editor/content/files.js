@@ -98,6 +98,19 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
     }
 }
 
+// create new form
+
+const createForm = document.getElementById("createForm")
+createForm.addEventListener("submit", e => {
+    e.preventDefault()
+    const val = createForm.filePath.value
+    const $ = val.split(".")
+    const extension = $[$.lenth - 1]
+    loadFile('"' + val + '"', extension, val, false, true)
+})
+
+// file upload
+
 let FS_FileHandle = null
 export const file_reader__readFile = async function() { // load files
     if (window.showOpenFilePicker) {
@@ -470,6 +483,7 @@ export async function openFile (name, type) {
         id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
         WORKER__MAIN_CHECKS()
         WORKER__FILE_LOADING()
+        __worker_1()
     } else {
         loadFile("This is a new file!", name.split(".")[name.split(".").length - 1], name, true, true)
     }
