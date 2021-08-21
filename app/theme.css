@@ -17,6 +17,8 @@
     --syntax-5: #f4eee4;
     /* purple */
     --syntax-6: #b47fd8;
+    /* icons */
+    --un-icon-margin: .2em;
 }
 
 body {
@@ -29,6 +31,7 @@ body {
 #editor {
     width: 100% !important;
     margin-top: 2em;
+    margin-bottom: 3em;
 }
 
 #editor.previewActive {
@@ -333,7 +336,8 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     display: block;
 }
 
-#titlebar {
+nav,
+footer {
     display: flex;
     border-bottom: solid 1px #191a2a;
     background: #202233 !important;
@@ -344,15 +348,35 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     width: 100vw;
 }
 
-#titlebar span,
-#titlebar a {
+footer {
+    border-bottom: none !important;
+    border-top: solid 1px #191a2a;
+    bottom: 0;
+    gap: 0 !important;
+    user-select: none;
+}
+
+footer span,
+footer a {
+    padding: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+nav span,
+nav a {
     padding: 5px;
     padding-left: 10px;
     padding-right: 10px;
 }
 
-#titlebar a:hover {
+nav a:hover,
+footer a:hover {
     background: #26283d9d;
+}
+
+footer ion-icon {
+    margin-top: var(--un-icon-margin);
 }
 
 .title1 {
@@ -366,11 +390,13 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     -webkit-user-select: none;
 }
 
-#titlebar #currentFile {
+nav #currentFile,
+footer #currentFile1 {
     font-weight: 505;
 }
 
-#titlebar a,
+nav a,
+footer a,
 .glow-btn {
     color: white;
     transition: all 0.2s;
@@ -379,7 +405,8 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
     margin-right: 15px;
 }
 
-#titlebar a:hover,
+nav a,
+footer a:hover,
 .glow-btn:hover {
     color: rgb(226, 226, 226);
     text-shadow: 0 0 1px #000, 0 0 5px #ffffff3d, 0 0 3px #ffffff3d, 0 0 14px #ffffff3d !important;
@@ -469,7 +496,7 @@ div[aria-label="Files Explorer"] div div .monaco-list-row:hover {
 
 #explorer ion-icon {
     margin-right: 5px;
-    margin-top: .2em;
+    margin-top: var(--un-icon-margin);
     /* font-size: 1.25em; */
 }
 
@@ -523,4 +550,22 @@ details summary {
 
 .context-menu .menu-options .menu-option:hover {
     background: #1e2030;
+}
+
+
+/* extra footer styles */
+
+.--editor-bottombar-info1 {
+    background: #26283d9d;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: rgb(151, 162, 214);
+    font-weight: 600;
+}
+
+.--editor-bottombar-info2 {
+    background: #212335a2;
+    padding-left: 15px;
+    padding-right: 15px;
+    color: rgb(130, 139, 184);
 }

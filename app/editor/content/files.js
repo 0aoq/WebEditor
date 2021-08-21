@@ -1,4 +1,8 @@
-let id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
+/*=========================================*
+ * FILE UTILITY SERVICE                    *
+ *=========================================*/
+
+let id = window.localStorage.getItem("currentFile")
 const addFiles = window.explorer.renderExplorer
 
 export const action$ = function(failed, side, action) {
@@ -161,11 +165,11 @@ window.addEventListener("keydown", e => {
     }
 })
 
-document.onkeydown = function(e) {
+/* document.onkeydown = function(e) {
     // bad method to stop the opening of the dev tools; fix later maybe?
     if (e.keyCode == 123) { return false }
     if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { return false }
-}
+} */
 
 // --
 const getGeneratedPageURL = ({ html, css, js, md }) => {
@@ -370,38 +374,6 @@ export const WORKER__MAIN_CHECKS = function() {
             addFilesToContextMenu = settings.addFilesToContextMenu
         }
     }
-    
-    // preview updates
-    /* let lastTyped = 0
-    let lastUpdated = 0
-    
-    if (window.sessionStorage.getItem("previewopen") != null && window.sessionStorage.getItem("previewopen") == "true") {
-        loadPreviewFile()
-    
-        editor.onDidChangeModelContent(() => { // update preview on input
-            lastTyped++
-            if (window.sessionStorage.getItem("previewopen") != null && window.sessionStorage.getItem("previewopen") == "true") {
-                let open = true
-                setInterval(() => {
-                    if (lastTyped >= 1) {
-                        lastUpdated++
-                    }
-                }, 1000);
-    
-                setTimeout(() => { 
-                    if (lastTyped >= 1 && open == true && lastUpdated > 5) {
-                        if (lastUpdated > 0) {
-                            lastTyped = 0
-                            loadPreviewFile()
-                            lastUpdated = 0
-                        }
-                    }
-    
-                    open = false
-                }, 2000);
-            }
-        })
-    } */
 }
 
 // file opening/deletion
@@ -418,8 +390,6 @@ function WORKER__FILE_LOADING() {
                     editor.addAction({
                         id: action.id,
                         label: action.label,
-                        contextMenuOrder: 2,
-                        contextMenuGroupId: "filesystem",
                         run: function() {
                             openFile(action.name, action.lang)
                         }
@@ -581,10 +551,20 @@ function __worker_1() {
 
 __worker_1()
 
-setInterval(() => {
-    WORKER__MAIN_CHECKS()
-}, 1000);
+const WORKER__EXTRA_CONTENT = function() {
+    if (id) {
+        const $array1 = id.split(".")
+        const extension = $array1[$array1.length - 1]
 
+        updateBottomBar(id, extension)
+    }
+}
+
+// timed workers
+setInterval(() => { WORKER__MAIN_CHECKS() }, 1000)
+setInterval(() => { WORKER__EXTRA_CONTENT() }, 350)
+
+// exports
 export default {
     file_reader__readFile,
     file_reader__writeFile,

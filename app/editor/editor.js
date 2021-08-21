@@ -117,6 +117,16 @@ let editor = monaco.editor.create(document.getElementById('editor'), {
     autoClosingDelete: 'always',
 });
 
+const getLineCount = function() {
+    // returns the full line count of the monaco editor
+    let i = 0
+    for (let _ of editor.getValue().split(/\r?\n/)) {
+        i++
+    }
+
+    return i
+}
+
 // state save
 editor.onDidChangeModelContent((event) => {
     const id = window.localStorage.getItem("currentFile")
@@ -152,6 +162,15 @@ const loadPreview = function() {
 
 const previewIframe = function(url) {
     document.getElementById("preview-iframe").src = url
+}
+
+const updateBottomBar = function(name, extension) {
+    // update the bottom bar on the page
+    document.getElementById("bottombar").innerHTML = `<span style="background: #476685;"><ion-icon name="${window.explorer.getFileIcon(extension)}"></ion-icon></span>
+    <span class="--editor-bottombar-info1">${name}</span> 
+    <!-- #1: LINE NUMBER, #2: COLUMN NUMBER -->
+    <span class="--editor-bottombar-info2">${editor.getPosition().lineNumber || 0}/${getLineCount() || 0}</span>
+    <span class="--editor-bottombar-info2">${editor.getPosition().column || 0}</span>`
 }
 
 // rename file

@@ -48,7 +48,7 @@
     </div>
 
     <!-- App -->
-    <div id="titlebar">
+    <nav id="titlebar">
         <span class="title1" style="margin-left: 0.95em;">Monaco Test</span>
         <span class="space1">•</span>
         <span id="currentFile">Untitled</span>
@@ -56,10 +56,9 @@
         <a href="https://github.com/0aoq/ubiquitous-engine" target="__blank">Github</a>
         <a href="https://github.com/0aoq/ubiquitous-engine/issues/new" target="__blank">Issue</a>
         <a data-file="settings.json">Settings</a>
-        <a data-editor-action="toggleExplorer">Explorer</a>
-    </div>
+    </nav>
 
-    <div style="display: flex;">
+    <div style="display: flex;" id="app">
         <ul id="explorer">
             <details>
                 <summary>
@@ -79,22 +78,12 @@
         <div id="terminal"><iframe src="https://0aoq.github.io/Console"></iframe></div>
     </div>
 
+    <footer id="bottombar">
+        <span style="background: #476685;"><ion-icon name="document-text-outline"></ion-icon></span>
+        <span class="--editor-bottombar-info1">No file open</span>
+    </footer>
+
     <script src="./editor/editor.js"></script>
-    <script>
-        // data.editor-action
-        document.querySelectorAll("a").forEach((element) => {
-            if (element.getAttribute("data-editor-action")) {
-                const attribute = element.getAttribute("data-editor-action")
-
-                element.addEventListener('click', () => {
-                    if (attribute === "toggleExplorer") {
-
-                    }
-                })
-            }
-        })
-    </script>
-
     <script src="./editor/content/context.js"></script>
 </body>
 

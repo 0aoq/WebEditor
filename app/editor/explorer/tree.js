@@ -86,7 +86,8 @@ window.explorer = {
                     window.explorer.createOptionNode(datapoint.name, datapoint.__id, true)
             }
         }
-    }
+    },
+    getFileIcon: getFileIcon
 }
 
 // Folder/directory icon (open and close)
