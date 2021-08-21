@@ -37,7 +37,13 @@ window.addEventListener("contextmenu", e => {
 
         if (e.target.classList.contains("isFileName")) {
             document.querySelector(".menu-options").insertAdjacentHTML("beforeend", `
-<li class="menu-option onhover shadow" onmousedown="renameFile('${e.target.innerText}', '${e.target.id}')">Rename</li>
+<li class="menu-option onhover shadow" data-delete-file="${encodeURI(e.target.innerText)}">Delete <ion-icon name="close-circle-outline"></ion-icon></li>
+            `)
+        }
+
+        if (e.target.classList.contains("isFileName") && e.target.classList.contains("canDeleteFile")) {
+            document.querySelector(".menu-options").insertAdjacentHTML("beforeend", `
+<li class="menu-option onhover shadow" data-delete-file="${encodeURI(e.target.innerText)}">Delete</li>
             `)
         }
 

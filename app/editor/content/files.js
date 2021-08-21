@@ -55,7 +55,7 @@ function getConversion(origin, to) {
 }
 
 let filesint = window.localStorage.getItem("filesint") || 0
-export const loadFile = function(content, lang, name, addToContext = true, autoswitch = true) {
+export const loadFile = function(content, lang, name, addToContext = false, autoswitch = true, folders = null) {
     if (testLang(lang)) {
         let conv = getConversion(lang)
         if (conv) {
@@ -77,7 +77,7 @@ export const loadFile = function(content, lang, name, addToContext = true, autos
                 __id: `${name}-${filesint}`,
                 lang: lang,
                 active: true,
-                addToContext: addToContext
+                folders: folders
             })
 
             window.localStorage.setItem(name, content)
@@ -106,7 +106,9 @@ createForm.addEventListener("submit", e => {
     const val = createForm.filePath.value
     const $ = val.split(".")
     const extension = $[$.lenth - 1]
-    loadFile('"' + val + '"', extension, val, false, true)
+    const file = window.explorer.splitPath(val)
+
+    loadFile('"' + file.fileName + '"', extension, file.fileName, false, true, file.paths || null)
 })
 
 // file upload
@@ -399,23 +401,13 @@ function WORKER__FILE_LOADING() {
         for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
             if (!__indexed.includes(action.name) && action.active == true) {
                 __indexed.push(action.name)
-                if (action.addToContext == true && addFilesToContextMenu == true) {
-                    editor.addAction({
-                        id: action.id,
-                        label: action.label,
-                        run: function() {
-                            openFile(action.name, action.lang)
-                        }
-                    })
-                } else {
-                    editor.addAction({
-                        id: action.id,
-                        label: action.label,
-                        run: function() {
-                            openFile(action.name, action.lang)
-                        }
-                    })
-                }
+                editor.addAction({
+                    id: action.id,
+                    label: action.label,
+                    run: function() {
+                        openFile(action.name, action.lang)
+                    }
+                })
 
                 const reservedFiles = ['settings.json']
                 if (!reservedFiles.includes(action.name)) {

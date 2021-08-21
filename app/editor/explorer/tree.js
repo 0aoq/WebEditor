@@ -37,7 +37,7 @@ const getFileIcon = function(extension) {
  *=========================================*/
 
 window.explorer = {
-    createOptionNode: function(name, __id, canDelete) {
+    createOptionNode: function(name, __id, canDelete, padding = 28) {
         const datapoint = {
             name: name,
             __id: __id
@@ -47,43 +47,79 @@ window.explorer = {
         const extension = $array1[$array1.length - 1]
 
         function __canDelete() {
-            if (canDelete) { return `
-        <a href="javascript:" class="glow-btn" data-delete-file="${datapoint.name}"><ion-icon name="close-circle-outline"></ion-icon></a>` } else {
-                return ``
-            }
+            if (canDelete) { return `canDeleteFile` } else { return `` }
         }
 
-        return `<li class="explorer-option" style="padding-left: 50px;" id="wrapper:${datapoint.__id || 0}">
+        return `<li class="explorer-option ${__canDelete()}" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
         <a data-file="${datapoint.name}" id="button:${datapoint.__id || 0}">
             <ion-icon name="${getFileIcon(extension)}"></ion-icon>
             <span class="isFileName" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
-            ${__canDelete()}
         </a>`
     },
-    createDirectory: function(parent, name, content) {
+    createDirectory: function(parent, name, content, padding = 15, addLine = true) {
+        function __addLine() {
+            if (addLine) { return `<div style="border-bottom: 1px solid rgba(185, 185, 185, 0.192);"></div>` } else { return `` }
+        }
+
+        function __addLine1() {
+            if (addLine) { return `<summary>
+                    <li class="explorer-outside-item" style="display: flex; padding-left: ${padding + "px" || "15px"};">
+                        <ion-icon name="folder"></ion-icon>
+                        <span>${name}</span>
+                    </li>
+                </summary>` } else {
+                return `<summary style="border-bottom: none !important;">
+                    <li class="explorer-outside-item" style="display: flex; padding-left: ${padding + "px" || "15px"};">
+                        <ion-icon name="folder"></ion-icon>
+                        <span>${name}</span>
+                    </li>
+                </summary>`
+            }
+        }
+
         parent.innerHTML += `<li class="explorer-outside-item">
-        <!-- Files -->
         <details>
-            <summary>
-                <li class="explorer-outside-item" style="display: flex; padding-left: 25px;">
-                    <ion-icon name="folder"></ion-icon>
-                    <span>${name}</span>
-                </li>
-            </summary>
-
-            ${content}
-
-            <div style="border-bottom: 1px solid rgba(185, 185, 185, 0.192);"></div>
+            ${__addLine1()}
+            <div id="${name}">${content}</div>
+            ${__addLine()}
         </details>
     </li>`
     },
     renderExplorer: function(files) {
+        let defaultPadding = 15
         document.getElementById("fileList").innerHTML = ""
 
         for (let datapoint of files) {
             if (datapoint.active && datapoint.name !== "settings.json") {
-                document.getElementById("fileList").innerHTML +=
-                    window.explorer.createOptionNode(datapoint.name, datapoint.__id, true)
+                if (datapoint.folders) {
+                    for (let folder of datapoint.folders) {
+                        let padding = defaultPadding + (datapoint.folders.indexOf(folder) * 10) + 10 // calculate the padding
+
+                        // create folder
+                        if (!document.getElementById(folder)) {
+                            window.explorer.createDirectory(
+                                document.getElementById("fileList"),
+                                folder,
+
+                                // create option
+                                `
+                                    ${window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding + 15)}
+                                `,
+
+                                padding,
+                                false
+                            )
+                        } else {
+                            // add file to folder if it already exists
+                            document.getElementById(folder).innerHTML +=
+                                window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding + 15)
+                        }
+                    }
+                } else {
+                    // create normal file
+                    document.getElementById("fileList").innerHTML +=
+                        window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, 28)
+                }
             }
         }
     },
@@ -94,10 +130,11 @@ window.explorer = {
 
         let paths = []
         for (let path of ____) { if (path !== file) { paths.push(path) } }
+        if (!paths[0]) { paths = null }
 
         return {
             paths: paths,
-            file: file
+            fileName: file
         }
     }
 }

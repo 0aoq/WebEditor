@@ -479,7 +479,7 @@ footer a:hover,
 }
 
 #explorer li:not(.explorer-outside-item) {
-    padding-left: 25px;
+    padding-left: 25px !important;
 }
 
 #explorer li details {
@@ -507,8 +507,8 @@ footer a:hover,
 
 #explorer a span {
     /* position icon */
-    margin-left: 25px;
-    margin-right: 50px;
+    margin-left: 22px;
+    margin-right: 15px;
 }
 
 details>summary::-webkit-details-marker {
