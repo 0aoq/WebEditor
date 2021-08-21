@@ -55,7 +55,7 @@ function getConversion(origin, to) {
 }
 
 let filesint = window.localStorage.getItem("filesint") || 0
-export const loadFile = function(content, lang, name, addToContext = false, autoswitch = true, folders = null) {
+export const loadFile = function(content, lang, name, addToContext = false, autoswitch = true) {
     if (testLang(lang)) {
         let conv = getConversion(lang)
         if (conv) {
@@ -77,7 +77,7 @@ export const loadFile = function(content, lang, name, addToContext = false, auto
                 __id: `${name}-${filesint}`,
                 lang: lang,
                 active: true,
-                folders: folders
+                folders: window.explorer.splitPath(name).paths || null
             })
 
             window.localStorage.setItem(name, content)
@@ -106,9 +106,8 @@ createForm.addEventListener("submit", e => {
     const val = createForm.filePath.value
     const $ = val.split(".")
     const extension = $[$.lenth - 1]
-    const file = window.explorer.splitPath(val)
 
-    loadFile('"' + file.fileName + '"', extension, file.fileName, false, true, file.paths || null)
+    loadFile('"' + val + '"', extension, val, false, true)
 })
 
 // file upload

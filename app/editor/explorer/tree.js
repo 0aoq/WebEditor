@@ -40,7 +40,8 @@ window.explorer = {
     createOptionNode: function(name, __id, canDelete, padding = 28) {
         const datapoint = {
             name: name,
-            __id: __id
+            __id: __id,
+            fullName: name
         }
 
         const $array1 = datapoint.name.split(".")
@@ -50,8 +51,9 @@ window.explorer = {
             if (canDelete) { return `canDeleteFile` } else { return `` }
         }
 
+        datapoint.name = window.explorer.splitPath(name).fileName
         return `<li class="explorer-option ${__canDelete()}" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
-        <a data-file="${datapoint.name}" id="button:${datapoint.__id || 0}">
+        <a data-file="${datapoint.fullName}" id="button:${datapoint.__id || 0}">
             <ion-icon name="${getFileIcon(extension)}"></ion-icon>
             <span class="isFileName" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
         </a>`
@@ -92,13 +94,39 @@ window.explorer = {
         for (let datapoint of files) {
             if (datapoint.active && datapoint.name !== "settings.json") {
                 if (datapoint.folders) {
+                    let NEXT_FOLDER_PADDING_ADD = 5 // the amount to add to the padding of the NEXT folder rendered
+
                     for (let folder of datapoint.folders) {
-                        let padding = defaultPadding + (datapoint.folders.indexOf(folder) * 10) + 10 // calculate the padding
+                        // calculate the padding
+                        let padding = defaultPadding + ((datapoint.folders.indexOf(folder) * 10) + 10) - 3
+
+                        // find parent node
+                        let parent
+                        if (datapoint.folders.indexOf(folder) > 0) {
+                            parent = document.getElementById(datapoint.folders[datapoint.folders.indexOf(folder) - 1]) // the folder just before
+                        } else { parent = document.getElementById("fileList") }
+
+                        for (let i = 1; i < 100; i++) {
+                            if (
+                                parent === document.getElementById(
+                                    datapoint.folders[datapoint.folders.indexOf(folder) - i]
+                                )
+                            ) {
+                                padding += i * 5
+                                if (padding !== 37) {
+                                    padding += NEXT_FOLDER_PADDING_ADD
+                                    NEXT_FOLDER_PADDING_ADD += 5
+                                }
+                            }
+                        }
+
+                        // remove extra nodes with same id
+                        if (document.getElementById(`wrapper:${datapoint.__id}`)) { document.getElementById(`wrapper:${datapoint.__id}`).remove() }
 
                         // create folder
                         if (!document.getElementById(folder)) {
                             window.explorer.createDirectory(
-                                document.getElementById("fileList"),
+                                parent,
                                 folder,
 
                                 // create option
@@ -117,8 +145,9 @@ window.explorer = {
                     }
                 } else {
                     // create normal file
+                    let padding = defaultPadding + 10
                     document.getElementById("fileList").innerHTML +=
-                        window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, 28)
+                        window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding)
                 }
             }
         }
