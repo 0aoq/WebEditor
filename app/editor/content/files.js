@@ -85,9 +85,9 @@ export const loadFile = function(content, lang, name, addToContext = false, auto
             window.localStorage.setItem("fileactions", JSON.stringify(parsed))
         }
 
-        if (autoswitch) {
+        /*if (autoswitch) {
             openFile(name, lang)
-        }
+        }*/
 
         WORKER__MAIN_CHECKS()
         WORKER__FILE_LOADING()

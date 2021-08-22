@@ -52,10 +52,10 @@ window.explorer = {
         }
 
         datapoint.name = window.explorer.splitPath(name).fileName
-        return `<li class="explorer-option ${__canDelete()}" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
+        return `<li class="explorer-option" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
         <a data-file="${datapoint.fullName}" id="button:${datapoint.__id || 0}">
             <ion-icon name="${getFileIcon(extension)}"></ion-icon>
-            <span class="isFileName" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
+            <span class="isFileName ${__canDelete()}" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
         </a>`
     },
     createDirectory: function(parent, name, content, padding = 15, addLine = true, insertWhere = `beforeend`) {
@@ -116,12 +116,12 @@ window.explorer = {
                                 padding += i * 5
                                 if (padding !== 37) {
                                     padding += NEXT_FOLDER_PADDING_ADD
-                                    NEXT_FOLDER_PADDING_ADD += 7
+                                    NEXT_FOLDER_PADDING_ADD += 5
                                 }
                             }
                         }
 
-                        if (padding < 22) { padding = 22 } // align first folder
+                        if (padding < 25) { padding = 25 } // align first folder
 
                         // remove extra nodes with same id
                         if (document.getElementById(`wrapper:${datapoint.__id}`)) { document.getElementById(`wrapper:${datapoint.__id}`).remove() }

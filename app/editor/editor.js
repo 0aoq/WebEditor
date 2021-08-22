@@ -173,9 +173,38 @@ const updateBottomBar = function(name, extension) {
     <span class="--editor-bottombar-info2">${editor.getPosition().column || 0}</span>`
 }
 
-// rename file
+// files
 const renameFile = function(file, id) {
     console.log(file, id)
+}
+
+const deleteFile1 = function(name) {
+    let id = window.localStorage.getItem("currentFile")
+    const action = { name: name }
+    if (id != action.name) {
+        if (action.name == "project_settings.json") {
+            window.sessionStorage.setItem("previewopen", false)
+        }
+
+        window.localStorage.removeItem(action.name)
+
+        const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
+
+        for (let __$ of parsed) {
+            if (__$.name == action.name) {
+                __$.active = false
+                __$.name = ""
+                __$.id = ""
+                __$.label = ""
+            }
+        }
+
+        window.localStorage.setItem("fileactions", JSON.stringify(parsed))
+
+        window.location.reload()
+    } else {
+        alert("Cannot delete current file.")
+    }
 }
 
 // language options

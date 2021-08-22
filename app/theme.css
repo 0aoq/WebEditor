@@ -435,7 +435,8 @@ footer a:hover,
 }
 
 #explorer li:nth-child(1) {
-    padding: 0.2em;
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
 }
 
 #explorer li.explorer-option {
