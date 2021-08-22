@@ -467,12 +467,19 @@ function insertCode(code) {
 
 export async function openFile (name, type) {
     if (window.localStorage.getItem(name)) {
+        let conv = getConversion(type)
+        if (conv) {
+            if (type === conv.origin) {
+                type = conv.to
+            }
+        }
+
         window.localStorage.setItem("currentFile", name)
         document.getElementById("currentFile").innerText = name
         document.title = `${name} - Monaco Test`
         editor.setValue(window.localStorage.getItem(name))
         monaco.editor.setModelLanguage(editor.getModel(), type)
-        id = window.location.search.slice(1) || window.localStorage.getItem("currentFile")
+        id = window.localStorage.getItem("currentFile")
         WORKER__MAIN_CHECKS()
         WORKER__FILE_LOADING()
         __worker_1()
@@ -517,6 +524,7 @@ if (window.localStorage.getItem("fileactions") == null) {
 if (id && window.localStorage.getItem("fileactions") != null) {
     for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
         if (action.name == id) {
+            console.log(action)
             openFile(action.name, action.lang)
         }
     }

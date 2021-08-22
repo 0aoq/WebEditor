@@ -175,7 +175,9 @@ const updateBottomBar = function(name, extension) {
 
 // files
 const renameFile = function(file, id) {
-    console.log(file, id)
+    let ls = window.localStorage.getItem(file)
+    document.getElementById(id).setAttribute("contenteditable", true)
+    document.getElementById(`button:${id.split(":")[1]}`).removeAttribute("data-file")
 }
 
 const deleteFile1 = function(name) {
