@@ -126,7 +126,7 @@ export const file_reader__readFile = async function() { // load files
         const $array = file.name.split(".")
         const lang = getConversion($array[$array.length - 1])
 
-        document.title = `${file.name} - Monaco Test`
+        document.title = `${file.name} - [0aoq/WebEditor]`
         loadFile(content, lang, file.name, addFilesToContextMenu, true)
     } else {
         // NO EASY METHOD
@@ -476,7 +476,7 @@ export async function openFile (name, type) {
 
         window.localStorage.setItem("currentFile", name)
         document.getElementById("currentFile").innerText = name
-        document.title = `${name} - Monaco Test`
+        document.title = `${name} - [0aoq/WebEditor]`
         editor.setValue(window.localStorage.getItem(name))
         monaco.editor.setModelLanguage(editor.getModel(), type)
         id = window.localStorage.getItem("currentFile")
@@ -524,7 +524,6 @@ if (window.localStorage.getItem("fileactions") == null) {
 if (id && window.localStorage.getItem("fileactions") != null) {
     for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
         if (action.name == id) {
-            console.log(action)
             openFile(action.name, action.lang)
         }
     }
@@ -572,6 +571,20 @@ const WORKER__EXTRA_CONTENT = function() {
 
         updateBottomBar(id, extension)
     }
+}
+
+if (id) {
+    let _ = id.split(".")
+    let lang = _[_.length - 1]
+
+    let conv = getConversion(lang)
+    if (conv) {
+        if (lang === conv.origin) {
+            lang = conv.to
+        }
+    }
+
+    openFile(id, lang)
 }
 
 // timed workers

@@ -88,7 +88,7 @@ const actions = [{
             type = 'plaintext'
         window.localStorage.setItem("currentFile", name)
         document.getElementById("currentFile").innerText = name
-        document.title = `Untitled - Monaco Test`
+        document.title = `Untitled - [0aoq/WebEditor]`
         editor.setValue(window.localStorage.getItem(name) || '')
         monaco.editor.setModelLanguage(editor.getModel(), type)
         action$(false, false, `Updated content of editor to the requested file`)
