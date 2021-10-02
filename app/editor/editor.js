@@ -93,7 +93,7 @@ monaco.editor.defineTheme('theme', {
     }
 })
 
-if (window.location.href !== "https://0aoq.github.io/ubiquitous-engine/app/") {
+if (window.location.href !== "https://0aoq.github.io/WebEditor/app/") {
     console.log("Emmet enabled!")
     emmetMonaco.emmetHTML()
     emmetMonaco.emmetCSS()
