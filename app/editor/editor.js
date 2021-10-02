@@ -1,3 +1,5 @@
+let storage = []
+
 monaco.editor.defineTheme('theme', {
     base: 'vs-dark',
     inherit: true,
@@ -145,7 +147,7 @@ editor.onDidChangeModelContent((event) => {
 // explorer
 window.explorer.createDirectory(document.querySelector("#explorer details"), "Files", `<div id="fileList"></div>`) // create file system directory
 window.explorer.createDirectory(document.querySelector("#explorer details"), "System Files", `<div>
-    ${window.explorer.createOptionNode("settings.json", "label:settings.json-1", false)}
+    ${window.explorer.createOptionNode("settings.json", "label:settings.json-1", false).html}
 </div>`) // create system files directory
 
 // extra windows

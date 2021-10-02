@@ -19,6 +19,8 @@
     --syntax-6: #b47fd8;
     /* icons */
     --un-icon-margin: .2em;
+    /* explorer */
+    --explorer-option-padding: .3em;
 }
 
 body {
@@ -435,12 +437,12 @@ footer a:hover,
 }
 
 #explorer li:nth-child(1) {
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
+    padding-top: var(--explorer-option-padding);
+    padding-bottom: var(--explorer-option-padding);
 }
 
 #explorer li.explorer-option {
-    padding: 0.2em;
+    padding: var(--explorer-option-padding);
 }
 
 #explorer details summary {

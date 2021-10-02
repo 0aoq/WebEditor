@@ -63,11 +63,15 @@ const actions = [{
         monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_C,
     ],
     run: function() {
-        window.localStorage.setItem("currentFile", null)
-        window.localStorage.setItem("previewopen", false)
+        window.localStorage.removeItem("currentFile")
+        window.sessionStorage.setItem("previewopen", false)
 
         for (let action of JSON.parse(window.localStorage.getItem("fileactions"))) {
             window.localStorage.removeItem(action.name)
+        }
+
+        for (let s of storage) {
+            window.sessionStorage.removeItem(s)
         }
 
         window.localStorage.removeItem("fileactions")

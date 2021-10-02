@@ -52,11 +52,15 @@ window.explorer = {
         }
 
         datapoint.name = window.explorer.splitPath(name).fileName
-        return `<li class="explorer-option" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
-        <a data-file="${datapoint.fullName}" id="button:${datapoint.__id || 0}">
-            <ion-icon name="${getFileIcon(extension)}"></ion-icon>
-            <span class="isFileName ${__canDelete()}" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
-        </a>`
+
+        return {
+            html: `<li class="explorer-option" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
+            <a data-file="${datapoint.fullName}" id="button:${datapoint.__id || 0}">
+                <ion-icon name="${getFileIcon(extension)}"></ion-icon>
+                <span class="isFileName ${__canDelete()}" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
+            </a>`,
+            id: `button:${datapoint.__id || 0}`
+        }
     },
     createDirectory: function(parent, name, content, padding = 15, addLine = true, insertWhere = `beforeend`) {
         function __addLine() {
@@ -80,12 +84,15 @@ window.explorer = {
         }
 
         parent.insertAdjacentHTML(insertWhere, `<li class="explorer-outside-item">
-        <details>
+        <details id="tempid">
             ${__addLine1()}
             <div id="${name}">${content}</div>
             ${__addLine()}
         </details>
     </li>`)
+
+        const div = document.getElementById("tempid")
+        return div
     },
     renderExplorer: function(files) {
         let defaultPadding = 15
@@ -127,31 +134,36 @@ window.explorer = {
                         if (document.getElementById(`wrapper:${datapoint.__id}`)) { document.getElementById(`wrapper:${datapoint.__id}`).remove() }
 
                         // create folder
+                        let button = window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding + 15)
                         if (!document.getElementById(folder)) {
-                            window.explorer.createDirectory(
+                            const $div = window.explorer.createDirectory(
                                 parent,
                                 folder,
 
                                 // create option
                                 `
-                                    ${window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding + 15)}
+                                    ${button.html}
                                 `,
 
                                 padding,
                                 false,
                                 "afterbegin"
                             )
+
+                            setTimeout(() => {
+                                setOpenValue($div)
+                            }, 100);
                         } else {
                             // add file to folder if it already exists
                             document.getElementById(folder).innerHTML +=
-                                window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding + 15)
+                                button.html
                         }
                     }
                 } else {
                     // create normal file
                     let padding = defaultPadding + 10
                     document.getElementById("fileList").innerHTML +=
-                        window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding)
+                        window.explorer.createOptionNode(datapoint.name, datapoint.__id, true, padding).html
                 }
             }
         }
@@ -172,16 +184,43 @@ window.explorer = {
     }
 }
 
+// quick functions for session storage
+const $get = function(key) { return window.sessionStorage.getItem(key) }
+const $set = function(key, value) { return window.sessionStorage.setItem(key, value) }
+
 // Folder/directory icon (open and close)
 
 let __details_index = 0
 let __indexed_details = []
+
+const toBool = function(string) {
+    return string === "true"
+}
+
+const setOpenValue = function(element) {
+    let get = $get(`tree.open>${element.id}`)
+    if (get !== null && !toBool(get)) {
+        $set(`tree.open>${element.id}`, false)
+        console.log("Set empty details list to false.")
+    } else {
+        const icon = document.querySelector(`details#${element.id} ion-icon`)
+        if (toBool(get) === true) { element.setAttribute("open", "") } else { element.removeAttribute("open") }
+        if (icon) { icon.setAttribute("name", "folder-open") }
+    }
+}
+
+setTimeout(() => {
+    document.querySelectorAll("details").forEach((element) => {
+        setOpenValue(element)
+    })
+}, 1000);
 
 setInterval(() => {
     document.querySelectorAll("details").forEach((element) => {
         if (!__indexed_details.includes(element)) {
             __details_index++
             element.id = "detailsList-" + __details_index
+            storage.push(element.id)
             __indexed_details.push(element)
         }
     })
@@ -189,7 +228,17 @@ setInterval(() => {
     document.querySelectorAll("details").forEach((element) => {
         document.querySelector(`details#${element.id} ion-icon`).setAttribute("name", "folder") // closed icon
 
-        const openIcon = document.querySelector(`details[open]#${element.id} ion-icon`)
-        if (openIcon) { openIcon.setAttribute("name", "folder-open") }
+        if (element.getAttribute("open") === "") {
+            $set(`tree.open>${element.id}`, true)
+            document.querySelector(`details[open]#${element.id} ion-icon`).setAttribute("name", "folder-open")
+
+            element.addEventListener("click", () => {
+                $set(`tree.open>${element.id}`, false)
+            })
+        }
     })
-}, 0.0001);
+
+    // reset list
+    __details_index = 0
+    __indexed_details = []
+}, 100);
