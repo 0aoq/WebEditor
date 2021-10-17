@@ -145,8 +145,8 @@ editor.onDidChangeModelContent((event) => {
 })
 
 // explorer
-window.explorer.createDirectory(document.querySelector("#explorer details"), "Files", `<div id="fileList"></div>`) // create file system directory
-window.explorer.createDirectory(document.querySelector("#explorer details"), "System Files", `<div>
+window.explorer.createDirectory(document.querySelector("#fs"), "Files", `<div id="fileList"></div>`) // create file system directory
+window.explorer.createDirectory(document.querySelector("#fs"), "System Files", `<div>
     ${window.explorer.createOptionNode("settings.json", "label:settings.json-1", false).html}
 </div>`) // create system files directory
 

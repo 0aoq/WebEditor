@@ -608,6 +608,7 @@ details summary {
     resize: none;
     white-space: nowrap;
     overflow-x: scroll;
+    text-overflow: ellipsis;
 }
 
 .--input ::placeholder {

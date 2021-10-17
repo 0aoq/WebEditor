@@ -37,7 +37,7 @@ const getFileIcon = function(extension) {
  *=========================================*/
 
 window.explorer = {
-    createOptionNode: function(name, __id, canDelete, padding = 28) {
+    createOptionNode: function(name, __id, canDelete, padding = 28, isProtected = false) {
         const datapoint = {
             name: name,
             __id: __id,
@@ -51,14 +51,18 @@ window.explorer = {
             if (canDelete) { return `canDeleteFile` } else { return `` }
         }
 
+        function __isProtected() {
+            if (isProtected) { return `protected-` } else { return `` }
+        }
+
         datapoint.name = window.explorer.splitPath(name).fileName
 
         return {
             html: `<li class="explorer-option" style="padding-left: ${padding + "px" || "0"} !important;" id="wrapper:${datapoint.__id || 0}">
-            <a data-file="${datapoint.fullName}" id="button:${datapoint.__id || 0}">
+            <a data-${__isProtected()}file="${datapoint.fullName}" id="button:${datapoint.__id || 0}">
                 <ion-icon name="${getFileIcon(extension)}"></ion-icon>
                 <span class="isFileName ${__canDelete()}" id="label:${datapoint.__id || 0}">${datapoint.name}</span>
-            </a>`,
+            </a></li>`,
             id: `button:${datapoint.__id || 0}`
         }
     },
@@ -99,7 +103,7 @@ window.explorer = {
         document.getElementById("fileList").innerHTML = ""
 
         for (let datapoint of files) {
-            if (datapoint.active && datapoint.name !== "settings.json") {
+            if (datapoint.active && datapoint.name !== "settings.json" && !datapoint.protected) {
                 if (datapoint.folders) {
                     let NEXT_FOLDER_PADDING_ADD = 5 // the amount to add to the padding of the NEXT folder rendered
 

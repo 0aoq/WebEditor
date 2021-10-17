@@ -65,15 +65,32 @@
                 <summary>
                     <li class="explorer-outside-item">
                         <ion-icon name="folder"></ion-icon>
-                        <span class="title1">Editor</span>
+                        <span class="title1">Plugins</span>
                     </li>
                 </summary>
 
-                <div class="--input">
-                    <form id="createForm">
-                        <input name="filePath" placeholder="Create new" rows="1" autocomplete="off"></input>
-                        <button type="submit" style="display: none;"></button>
-                    </form>
+                <div id="plugins">
+                    <div class="--input">
+                        <input disabled value="Plugins are experimental features that aren't fully supported yet in the editor!"></input>
+                    </div>
+                </div>
+            </details>
+
+            <details>
+                <summary>
+                    <li class="explorer-outside-item">
+                        <ion-icon name="folder"></ion-icon>
+                        <span class="title1">Explorer</span>
+                    </li>
+                </summary>
+
+                <div id="fs">
+                    <div class="--input">
+                        <form id="createForm">
+                            <input name="filePath" placeholder="Create new" rows="1" autocomplete="off"></input>
+                            <button type="submit" style="display: none;"></button>
+                        </form>
+                    </div>
                 </div>
             </details>
         </ul>
@@ -93,6 +110,9 @@
 
     <script src="./editor/editor.js"></script>
     <script src="./editor/content/context.js"></script>
+
+    <!-- plugins -->
+    <!-- <script src="./editor/plugins/rbxlx.js"></script> FUTURE SUPPORT FOR PUBLISHING TO ROBLOX PLACES -->
 </body>
 
 </html>

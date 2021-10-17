@@ -56,7 +56,7 @@ function getConversion(origin, to) {
 }
 
 let filesint = window.localStorage.getItem("filesint") || 0
-export const loadFile = function(content, lang, name, addToContext = false, autoswitch = true) {
+export const loadFile = function(content, lang, name, addToContext = false, autoswitch = true, isprotected = false) {
     if (testLang(lang)) {
         let conv = getConversion(lang)
         if (conv) {
@@ -78,7 +78,8 @@ export const loadFile = function(content, lang, name, addToContext = false, auto
                 __id: `${name}-${filesint}`,
                 lang: lang,
                 active: true,
-                folders: window.explorer.splitPath(name).paths || null
+                folders: window.explorer.splitPath(name).paths || null,
+                protected: isprotected
             })
 
             window.localStorage.setItem(name, content)
@@ -465,7 +466,7 @@ function insertCode(code) {
     ])
 }
 
-export async function openFile (name, type) {
+export async function openFile (name, type, isProtected = false) {
     if (window.localStorage.getItem(name)) {
         let conv = getConversion(type)
         if (conv) {
@@ -484,7 +485,7 @@ export async function openFile (name, type) {
         WORKER__FILE_LOADING()
         __worker_1()
     } else {
-        loadFile("This is a new file!", name.split(".")[name.split(".").length - 1], name, true, true)
+        loadFile("This is a new file!", name.split(".")[name.split(".").length - 1], name, true, true, isProtected)
     }
 }
 
@@ -532,13 +533,14 @@ if (id && window.localStorage.getItem("fileactions") != null) {
 // extra titlebar buttons
 function __worker_1() {
     document.querySelectorAll("a").forEach((element) => {
-        if (element.getAttribute("data-file")) {
-            const extensions = element.getAttribute("data-file").split(".")
+        function load_editor_file_temp(isProtected = false) {
+            function __isProtected() { if (isProtected) { return "protected-" } else { return "" } }
+            const extensions = element.getAttribute(`data-${__isProtected()}file`).split(".")
     
             element.addEventListener('click', () => {
                     // settings file
                 if (window.localStorage.getItem("settings.json") == null) {
-                    loadFile(settingsFile, "json", "settings.json", false, false)
+                    loadFile(settingsFile, "json", "settings.json", false, false, isProtected)
                     window.location.reload()
                 }
 
@@ -550,14 +552,20 @@ function __worker_1() {
                     }
                 }
 
-                openFile(element.getAttribute("data-file"), lang)
+                openFile(element.getAttribute(`data-${__isProtected()}file`), lang, isProtected)
                 __worker_1()
             })
+        }
+
+        if (element.getAttribute("data-file")) {
+            load_editor_file_temp()
         } else if (element.getAttribute("data-delete-file")) {    
             element.addEventListener('click', () => {
                 deleteFile(element.getAttribute("data-delete-file"))
                 __worker_1()
             })
+        } else if (element.getAttribute("data-protected-file")) {
+            load_editor_file_temp(true)
         }
     })
 }

@@ -75,7 +75,7 @@ const actions = [{
         }
 
         window.localStorage.removeItem("fileactions")
-        window.localStorage.setItem("filesint", 0)
+        window.localStorage.removeItem("filesint")
         window.location.reload()
     },
 }, {
