@@ -66,8 +66,8 @@ window.explorer = {
             id: `button:${datapoint.__id || 0}`
         }
     },
-    createDirectory: function(parent, name, content, padding = 15, addLine = true, insertWhere = `beforeend`) {
-        if (parent == "dir") { parent = document.getElementById("plugins") }
+    createDirectory: function(parent = document.getElementById("plugins"), name, content, padding = 15, addLine = true, insertWhere = `beforeend`) {
+        parent = parent || document.getElementById("plugins")
 
         function __addLine() {
             if (addLine) { return `<div style="border-bottom: 1px solid rgba(185, 185, 185, 0.192);"></div>` } else { return `` }

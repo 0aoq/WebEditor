@@ -2,7 +2,7 @@
 
 window.checkSecurity = function(contents) {
     // file security
-    const UNSAFE_TERMS = ["document", "body", "inner", "<", ">", "script", "class", "console", "alert"]
+    const UNSAFE_TERMS = ["document", "body", "inner", "<", ">", "script", "class", "alert", "var", "console"]
     const REQUIRED_TERMS = ["window.explorer.createDirectory", "window.explorer.newButton"]
 
     let match_terms = []
@@ -63,13 +63,11 @@ savePluginForm.addEventListener("submit", e => {
         if (exists === null || exists === undefined) {
             $.push({
                 name: savePluginForm.filePath.value,
-                blob: create_plugin_url(FILE_DATA, 'text/javascript') || "?"
             })
-        } else {
-            exists.blob = create_plugin_url(FILE_DATA, 'text/javascript') || "?"
         }
 
         ls.s("editor.plugins", JSON.stringify($))
+        window.location.reload()
     }
 })
 
@@ -78,7 +76,33 @@ function runPlugins() {
     for (let plugin of $) {
         let FILE_DATA = ls.g(plugin.name)
         let scan_results = window.checkSecurity(FILE_DATA)
-        if (scan_results.match.length !== 0 || scan_results.needed.length !== 0) { console.warn(`Skipping plugin "${plugin.name}; Malicious plugin`) }
+
+        let __CAN_RUN = false
+        if (scan_results.match.length !== 0 || scan_results.needed.length !== 0) {
+            console.warn(`Skipping plugin "${plugin.name}"; Malicious plugin`)
+        } else {
+            __CAN_RUN = true
+        }
+
+        if (__CAN_RUN) {
+            console.log("Loaded plugin: @" + plugin.name)
+
+            // replace all variables with "NAME_at_external_FILE_NAME"
+            for (let line of FILE_DATA.split(/\r?\n/)) {
+                const cnst = line.split("const ")
+                if (cnst[1]) {
+                    const $_ = cnst[1].split(" ")[0]
+                    FILE_DATA = FILE_DATA.replaceAll($_, `${$_}_at_external_${plugin.name.replaceAll(".", "_")}`)
+                }
+            }
+
+            // create script tag
+            const script = document.createElement('script')
+            script.src = create_plugin_url(FILE_DATA, "text/javascript")
+            script.setAttribute("async", "async")
+            script.id = `script_at_external_${plugin.name.replaceAll(".", "_")}`
+            document.head.append(script)
+        }
     }
 }
 
