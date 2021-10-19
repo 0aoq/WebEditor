@@ -185,6 +185,14 @@ window.explorer = {
             paths: paths,
             fileName: file
         }
+    },
+    createExplorerButton: function(id, text, icon) {
+        return `<li class="explorer-option" style="padding-left: 28px !important;">
+            <a id="${id}">
+                <ion-icon name="${icon}"></ion-icon>
+                <span class="glow-btw">${text}</span>
+            </a>
+        </li>`
     }
 }
 
