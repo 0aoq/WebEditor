@@ -67,6 +67,8 @@ window.explorer = {
         }
     },
     createDirectory: function(parent, name, content, padding = 15, addLine = true, insertWhere = `beforeend`) {
+        if (parent == "dir") { parent = document.getElementById("plugins") }
+
         function __addLine() {
             if (addLine) { return `<div style="border-bottom: 1px solid rgba(185, 185, 185, 0.192);"></div>` } else { return `` }
         }
@@ -186,7 +188,7 @@ window.explorer = {
             fileName: file
         }
     },
-    createExplorerButton: function(id, text, icon) {
+    newButton: function(id, text, icon) {
         return `<li class="explorer-option" style="padding-left: 28px !important;">
             <a id="${id}">
                 <ion-icon name="${icon}"></ion-icon>
