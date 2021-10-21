@@ -1,9 +1,14 @@
+/*===================================================*
+ * 0aoq/WebEditor -- Licensed under the MIT license. *
+ * https://github.com/0aoq/WebEditor                 *
+ *===================================================*/
+
 // 0aoq/WebEditor plugin manager
 
 window.checkSecurity = function(contents) {
     // file security
     const UNSAFE_TERMS = ["document", "body", "inner", "<", ">", "script", "class", "alert", "var", "console"]
-    const REQUIRED_TERMS = ["window.explorer.createDirectory", "window.explorer.newButton"]
+    const REQUIRED_TERMS = ["window.explorer.createDirectory", "window.explorer"]
 
     let match_terms = []
     let needed_terms = []

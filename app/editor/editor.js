@@ -1,3 +1,8 @@
+/*===================================================*
+ * 0aoq/WebEditor -- Licensed under the MIT license. *
+ * https://github.com/0aoq/WebEditor                 *
+ *===================================================*/
+
 let storage = []
 
 monaco.editor.defineTheme('theme', {

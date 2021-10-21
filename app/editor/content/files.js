@@ -1,3 +1,8 @@
+/*===================================================*
+ * 0aoq/WebEditor -- Licensed under the MIT license. *
+ * https://github.com/0aoq/WebEditor                 *
+ *===================================================*/
+
 /*=========================================*
  * FILE UTILITY SERVICE                    *
  *=========================================*/
@@ -386,7 +391,19 @@ export const WORKER__MAIN_CHECKS = function() {
             if (!settings.topbarEnabled) {
                 document.getElementById("titlebar").style.display = "none"
             }
-    
+
+            if (settings.editSyntaxColors) {
+                document.head.innerHTML += `
+:root {
+    --syntax-1: ${settings.syntax.syntax1} !important;
+    --syntax-2: ${settings.syntax.syntax2} !important;
+    --syntax-3: ${settings.syntax.syntax3} !important;
+    --syntax-4: ${settings.syntax.syntax4} !important;
+    --syntax-5: ${settings.syntax.syntax5} !important;
+    --syntax-6: ${settings.syntax.syntax6} !important;
+}`
+            }
+
             addFilesToContextMenu = settings.addFilesToContextMenu
         }
     }

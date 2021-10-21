@@ -1,3 +1,8 @@
+/*===================================================*
+ * 0aoq/WebEditor -- Licensed under the MIT license. *
+ * https://github.com/0aoq/WebEditor                 *
+ *===================================================*/
+
 const ThemeColors = {
     theme_desaturated_gray: '#7f85a3',
     theme_dark_blue: '#3e68d7',

@@ -1,3 +1,8 @@
+/*===================================================*
+ * 0aoq/WebEditor -- Licensed under the MIT license. *
+ * https://github.com/0aoq/WebEditor                 *
+ *===================================================*/
+
 /*=========================================*
  * AUTO ICON SERVICE                       *
  *=========================================*/
@@ -195,6 +200,18 @@ window.explorer = {
                 <span class="glow-btw">${text}</span>
             </a>
         </li>`
+    },
+    plugins: {
+        getFile: function(name) {
+            let $__ = name.split(".")
+            let $$_ = $__[$__.length - 1]
+            if ($$_.length <= 5) { return window.localStorage.getItem(name) }
+        },
+        updateFile: function(name, contents) {
+            let $__ = name.split(".")
+            let $$_ = $__[$__.length - 1]
+            if ($$_.length <= 5) { return window.localStorage.setItem(name, contents) }
+        }
     }
 }
 
