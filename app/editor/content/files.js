@@ -364,7 +364,12 @@ export const WORKER__MAIN_CHECKS = function() {
         "minimapEnabled": false,
         "addFilesToContextMenu": true,
         "topbarEnabled": true,
-        "editorFontSize": "14px"
+        "editorFontSize": "14px",
+        "editor_theme": "Default Glow (Dark)",
+        "fontFamily": "consolas",
+        "smoothCaret": true,
+        "formatOnType": true,
+        "lineNumbers": true
     }
 ]`
     
@@ -381,11 +386,27 @@ export const WORKER__MAIN_CHECKS = function() {
             settings.addFilesToContextMenu = settings.addFilesToContextMenu || true
             settings.editorFontSize = settings.editorFontSize || "14px"
     
+            if (settings.editor_theme === "Default Glow (Dark)") { 
+                if (!document.querySelector("link#theme_css")) {
+                    document.head.innerHTML += `<link rel="stylesheet" href="./editor-theme.css" id="theme_css">`
+                    settings.editor_theme = "0aDark"
+                }
+            } else {
+                if (document.querySelector("link#theme_css")) {
+                    document.querySelector("link#theme_css").remove()
+                }
+            }
+
             editor.updateOptions({
                 minimap: {
                     enabled: settings.minimapEnabled
                 },
-                fontSize: settings.editorFontSize
+                fontSize: settings.editorFontSize,
+                fontFamily: settings.fontFamily || "consolas",
+                cursorSmoothCaretAnimation: settings.smoothCaret || true,
+                formatOnType: settings.formatOnType || true,
+                lineNumbers: settings.lineNumbers === true,
+                theme: settings.editor_theme || "0aDark"
             })
     
             if (!settings.topbarEnabled) {

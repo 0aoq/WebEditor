@@ -49,50 +49,8 @@ body {
     font-family: 'Fira Code', 'Courier New', monospace !important;
 } */
 
-.mtk6 {
-    color: var(--syntax-2) !important;
-    text-shadow: 0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3 !important;
-}
 
-.mtk3,
-.mtk7,
-.mtk9 {
-    /* comments/idk/operators */
-    color: var(--syntax-3) !important;
-}
-
-.mtk4,
-.mtk8 {
-    color: var(--syntax-1) !important;
-    font-weight: 600;
-    text-shadow: 0 0 1px #000, 0 0 5px #fc1f2e3d, 0 0 3px #fc1f2e3d, 0 0 14px #fc1f2e3d !important;
-}
-
-.mtk5 {
-    /* string */
-    color: var(--syntax-4) !important;
-    text-shadow: 0 0 1px #001716, 0 0 2px #55c58752, 0 0 3px #55c58752, 0 0 5px #55c58752 !important;
-}
-
-
-/* .mtk9 {
-    color: #fff5f6;
-    text-shadow: 0 0 2px #000, 0 0 10px #fc1f2c75, 0 0 5px #fc1f2c75, 0 0 25px #fc1f2c75;
-} */
-
-
-/* .mtk11 { FUNCTION NAME GLOW - DISABLED
-    color: #72f1b8;
-    text-shadow: 0 0 2px #100c0f, 0 0 10px #257c5575, 0 0 35px #21272475;
-} */
-
-
-/* mtk8: variable type */
-
-.mtk14 {
-    color: var(--syntax-5) !important;
-    text-shadow: 0 0 2px #393a33, 0 0 8px #f39f0575, 0 0 2px #f39f0575 !important;
-}
+/* moved to ./editor-theme.css */
 
 .monaco-editor .inputarea.ime-input {
     background: transparent;

@@ -5,12 +5,205 @@
 
 let storage = []
 
-monaco.editor.defineTheme('theme', {
+monaco.editor.defineTheme('0aDark', {
     base: 'vs-dark',
     inherit: true,
     rules: [{
-        background: __('theme_gray_4')
-    }],
+            background: __('theme_gray_4')
+        }, {
+            "foreground": "6272a4",
+            "token": "comment"
+        },
+        {
+            "foreground": "55c588",
+            "token": "string"
+        },
+        {
+            "foreground": "bd93f9",
+            "token": "constant.numeric"
+        },
+        {
+            "foreground": "bd93f9",
+            "token": "constant.language"
+        },
+        {
+            "foreground": "bd93f9",
+            "token": "constant.character"
+        },
+        {
+            "foreground": "bd93f9",
+            "token": "constant.other"
+        },
+        {
+            "foreground": "ffb86c",
+            "token": "variable.other.readwrite.instance",
+            "fontStyle": "italic",
+        },
+        {
+            "foreground": "f97e72",
+            "token": "constant.character.escaped"
+        },
+        {
+            "foreground": "f97e72",
+            "token": "constant.character.escape"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "string source"
+        },
+        {
+            "foreground": "f97e72",
+            "token": "string source.ruby"
+        },
+        {
+            "foreground": "f97e72",
+            "token": "keyword",
+            "fontStyle": "italic bold",
+        },
+        {
+            "foreground": "f97e72",
+            "token": "storage"
+        },
+        {
+            "foreground": "8be9fd",
+            "fontStyle": "italic",
+            "token": "storage.type"
+        },
+        {
+            "foreground": "50fa7b",
+            "fontStyle": "underline",
+            "token": "entity.name.class"
+        },
+        {
+            "foreground": "50fa7b",
+            "fontStyle": "italic underline",
+            "token": "entity.other.inherited-class"
+        },
+        {
+            "foreground": "50fa7b",
+            "token": "entity.name.function",
+            "fontStyle": "italic",
+        },
+        {
+            "foreground": "6d77b3",
+            "fontStyle": "italic",
+            "token": "variable.parameter",
+        },
+        {
+            "foreground": "f97e72",
+            "token": "entity.name.tag"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "entity.other.attribute-name"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "support.function",
+            "fontStyle": "italic",
+        },
+        {
+            "foreground": "6be5fd",
+            "token": "support.constant"
+        },
+        {
+            "foreground": "66d9ef",
+            "fontStyle": " italic",
+            "token": "support.type"
+        },
+        {
+            "foreground": "66d9ef",
+            "fontStyle": " italic",
+            "token": "support.class"
+        },
+        {
+            "foreground": "f8f8f0",
+            "background": "f97e72",
+            "token": "invalid"
+        },
+        {
+            "foreground": "f8f8f0",
+            "background": "bd93f9",
+            "token": "invalid.deprecated"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "meta.structure.dictionary.json string.quoted.double.json"
+        },
+        {
+            "foreground": "6272a4",
+            "token": "meta.diff"
+        },
+        {
+            "foreground": "6272a4",
+            "token": "meta.diff.header"
+        },
+        {
+            "foreground": "f97e72",
+            "token": "markup.deleted"
+        },
+        {
+            "foreground": "50fa7b",
+            "token": "markup.inserted"
+        },
+        {
+            "foreground": "e6db74",
+            "token": "markup.changed"
+        },
+        {
+            "foreground": "bd93f9",
+            "token": "constant.numeric.line-number.find-in-files - match"
+        },
+        {
+            "foreground": "e6db74",
+            "token": "entity.name.filename"
+        },
+        {
+            "foreground": "f83333",
+            "token": "message.error"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "punctuation.definition.string.begin.json - meta.structure.dictionary.value.json"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "punctuation.definition.string.end.json - meta.structure.dictionary.value.json"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "meta.structure.dictionary.json string.quoted.double.json"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "meta.structure.dictionary.value.json string.quoted.double.json"
+        },
+        {
+            "foreground": "50fa7b",
+            "token": "meta meta meta meta meta meta meta.structure.dictionary.value string"
+        },
+        {
+            "foreground": "ffb86c",
+            "token": "meta meta meta meta meta meta.structure.dictionary.value string"
+        },
+        {
+            "foreground": "f97e72",
+            "token": "meta meta meta meta meta.structure.dictionary.value string"
+        },
+        {
+            "foreground": "bd93f9",
+            "token": "meta meta meta meta.structure.dictionary.value string"
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "meta meta meta.structure.dictionary.value string",
+
+        },
+        {
+            "foreground": "6d77b3",
+            "token": "meta meta.structure.dictionary.value string"
+        }
+    ],
     colors: {
         // Misc
 
@@ -95,8 +288,18 @@ monaco.editor.defineTheme('theme', {
         "inputValidation.warningBackground": "#ad7c43",
         "inputValidation.warningForeground": "#ffffff",
         "inputValidation.warningBorder": __('theme_yellow'),
-    }
+    },
 })
+
+function __DEFINE_THEME(name) {
+    // load from https://github.com/brijeshb42/monaco-themes (MIT LICENSE)
+    fetch(`https://raw.githubusercontent.com/brijeshb42/monaco-themes/master/themes/${name}.json`)
+        .then(data => data.json())
+        .then(data => monaco.editor.defineTheme(name, data))
+}
+
+const themes = ["Dracula", "monoindustrial", "Cobalt", "Tomorrow-Night-Eighties", "Tomorrow-Night", "Tomorrow-Night-Bright", "Monokai"]
+for (let theme of themes) { __DEFINE_THEME(theme) }
 
 if (window.location.href !== "https://0aoq.github.io/WebEditor/app/") {
     console.log("Emmet enabled!")
@@ -122,7 +325,21 @@ let editor = monaco.editor.create(document.getElementById('editor'), {
     formatOnType: true,
     formatOnPaste: true,
     autoClosingDelete: 'always',
+    cursorSmoothCaretAnimation: true,
+    fontLigatures: true,
+    glyphMargin: true,
+    linkedEditing: true,
+    padding: {
+        top: "15px",
+        bottom: "25px"
+    },
+    scrollBeyondLastLine: false
 });
+
+monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true)
+monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+    allowNonTsExtensions: true
+})
 
 const getLineCount = function() {
     // returns the full line count of the monaco editor
