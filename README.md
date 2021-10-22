@@ -1,5 +1,7 @@
 # ubiquitous-engine
 
+(This README file is out of date, and will be updated soon.)
+
 This was just a random test I did of the [monaco editor](https://github.com/microsoft/monaco-editor). Simple documentation is below.
 
 ## Use Documentation

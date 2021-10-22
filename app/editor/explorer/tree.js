@@ -9,6 +9,7 @@
 
 const fileIcons = [
     { extension: "js", icon: "logo-javascript" },
+    { extension: "json", icon: "settings-outline" },
     { extension: "jsx", icon: "logo-react" },
     { extension: "css", icon: "logo-css3" },
     { extension: "html", icon: "logo-html5" },
@@ -207,10 +208,41 @@ window.explorer = {
             let $$_ = $__[$__.length - 1]
             if ($$_.length <= 5) { return window.localStorage.getItem(name) }
         },
-        updateFile: function(name, contents) {
+        updateFile: function(name, content) {
             let $__ = name.split(".")
             let $$_ = $__[$__.length - 1]
-            if ($$_.length <= 5) { return window.localStorage.setItem(name, contents) }
+            if ($$_.length <= 5) {
+                const parsed = JSON.parse(window.localStorage.getItem("fileactions"))
+
+                let filesint = window.localStorage.getItem("filesint")
+                filesint++
+                window.localStorage.setItem("filesint", filesint)
+
+                if (window.localStorage.getItem(name) == null) {
+                    parsed.push({
+                        id: "open-file-" + name.replaceAll(".", ""),
+                        label: "Open " + name,
+                        name: name,
+                        __id: `${name}-${filesint}`,
+                        lang: $$_,
+                        active: true,
+                        folders: window.explorer.splitPath(name).paths || null,
+                        protected: false
+                    })
+
+                    window.localStorage.setItem(name, content)
+                    window.localStorage.setItem("fileactions", JSON.stringify(parsed))
+                }
+            }
+        },
+        on: function(id, event, func) {
+            document.getElementById(id).addEventListener(event, e => {
+                e.preventDefault()
+                func(e)
+            })
+        },
+        id: function(id) {
+            return document.getElementById(id)
         }
     }
 }

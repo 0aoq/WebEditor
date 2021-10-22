@@ -75,7 +75,8 @@ const actions = [{
         }
 
         window.localStorage.removeItem("fileactions")
-        window.localStorage.removeItem("filesint")
+        window.localStorage.removeItem("editor.plugins")
+        for (let i = 1; i < 100; i++) { window.localStorage.removeItem("filesint") }
         window.location.reload()
     },
 }, {
@@ -95,8 +96,6 @@ const actions = [{
         document.title = `Untitled - [0aoq/WebEditor]`
         editor.setValue(window.localStorage.getItem(name) || '')
         monaco.editor.setModelLanguage(editor.getModel(), type)
-        action$(false, false, `Updated content of editor to the requested file`)
-        action$(false, false, `Changed language to ${type}`)
         files.WORKER__MAIN_CHECKS()
         files.WORKER__FILE_LOADING()
     },

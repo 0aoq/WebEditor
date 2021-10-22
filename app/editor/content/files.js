@@ -110,6 +110,7 @@ export const loadFile = function(content, lang, name, addToContext = false, auto
 const createForm = document.getElementById("createForm")
 createForm.addEventListener("submit", e => {
     e.preventDefault()
+    e.stopImmediatePropagation()
     const val = createForm.filePath.value
     const $ = val.split(".")
     const extension = $[$.lenth - 1]
@@ -365,7 +366,7 @@ export const WORKER__MAIN_CHECKS = function() {
         "addFilesToContextMenu": true,
         "topbarEnabled": true,
         "editorFontSize": "14px",
-        "editor_theme": "Default Glow (Dark)",
+        "editor_theme": "0aDark",
         "fontFamily": "consolas",
         "smoothCaret": true,
         "formatOnType": true,
@@ -388,8 +389,8 @@ export const WORKER__MAIN_CHECKS = function() {
     
             if (settings.editor_theme === "Default Glow (Dark)") { 
                 if (!document.querySelector("link#theme_css")) {
-                    document.head.innerHTML += `<link rel="stylesheet" href="./editor-theme.css" id="theme_css">`
                     settings.editor_theme = "0aDark"
+                    document.head.innerHTML += `<link rel="stylesheet" href="./editor-theme.css" id="theme_css">`
                 }
             } else {
                 if (document.querySelector("link#theme_css")) {
@@ -406,7 +407,7 @@ export const WORKER__MAIN_CHECKS = function() {
                 cursorSmoothCaretAnimation: settings.smoothCaret || true,
                 formatOnType: settings.formatOnType || true,
                 lineNumbers: settings.lineNumbers === true,
-                theme: settings.editor_theme || "0aDark"
+                theme: settings.editor_theme
             })
     
             if (!settings.topbarEnabled) {

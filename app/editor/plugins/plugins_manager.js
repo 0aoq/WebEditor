@@ -7,7 +7,7 @@
 
 window.checkSecurity = function(contents) {
     // file security
-    const UNSAFE_TERMS = ["document", "body", "inner", "<", ">", "script", "class", "alert", "var", "console"]
+    const UNSAFE_TERMS = ["document", "inner", "script", "alert", "var", "remove"]
     const REQUIRED_TERMS = ["window.explorer.createDirectory", "window.explorer"]
 
     let match_terms = []

@@ -314,7 +314,7 @@ let editor = monaco.editor.create(document.getElementById('editor'), {
         'Once a file is loaded, it can be selected through the context menu (RMB), or through the command palette (F1), just type "Open " and then the file name!'
     ].join('\n'),
     language: 'plaintext',
-    theme: 'theme',
+    theme: '0aDark',
     fontSize: "14px",
     minimap: {
         enabled: false
