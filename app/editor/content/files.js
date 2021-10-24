@@ -577,7 +577,7 @@ function __worker_1() {
             const extensions = element.getAttribute(`data-${__isProtected()}file`).split(".")
     
             element.addEventListener('click', () => {
-                    // settings file
+                // settings file
                 if (window.localStorage.getItem("settings.json") == null) {
                     loadFile(settingsFile, "json", "settings.json", false, false, isProtected)
                     window.location.reload()
