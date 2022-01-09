@@ -301,7 +301,7 @@ function __DEFINE_THEME(name) {
 const themes = ["Dracula", "monoindustrial", "Cobalt", "Tomorrow-Night-Eighties", "Tomorrow-Night", "Tomorrow-Night-Bright", "Monokai"]
 for (let theme of themes) { __DEFINE_THEME(theme) }
 
-if (window.location.href !== "https://0aoq.github.io/WebEditor/app/") {
+if (window.location.href !== "https://webedit.zbase.dev/app/") {
     console.log("Emmet enabled!")
     emmetMonaco.emmetHTML()
     emmetMonaco.emmetCSS()
